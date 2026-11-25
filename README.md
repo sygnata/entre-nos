@@ -42,3 +42,5 @@ Isso não desativa TLS nem deve ser adicionado a arquivos versionados. O emulado
 - `docs`: decisões, status e validações.
 
 Consulte `ROADMAP_ENTRENOS.md` e `AGENTS.md` antes de alterar o projeto.
+
+Para instalar e testar o app em um celular Android físico, consulte `docs/TESTE_CELULAR_ANDROID.md`.
