@@ -30,7 +30,7 @@
 | Estado Git | `feature/project-bootstrap` criada a partir da documentação da Etapa 0. |
 | Estrutura do repositório | Projeto Flutter criado sem sobrescrever `ROADMAP_ENTRENOS.md` ou `docs/`. |
 | Ambiente Flutter | Flutter 3.29.2, Dart 3.7.2 e Git 2.33.0 instalados. Flutter reportou falha de certificado ao buscar tags; nenhuma atualização foi executada. |
-| Android | SDK 36.0.0 e NDK 27.0.12077973 instalados durante o build. O `flutter doctor` ainda sinaliza ausência de `cmdline-tools` e status de licenças desconhecido, embora as licenças necessárias ao build tenham sido aceitas pelo Gradle. |
+| Android | SDK 36.0.0, NDK 27.0.12077973 e Command-line Tools instalados. `flutter doctor -v` confirma o toolchain Android e todas as licenças aceitas. |
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |
@@ -40,4 +40,4 @@
 
 ## Próximo passo
 
-Para concluir integralmente o aceite da Etapa 1, habilitar a aceleração de virtualização ou conectar um dispositivo Android físico, iniciar o app e registrar o resultado. Também instalar `cmdline-tools` e executar a verificação de licenças para deixar o `flutter doctor` limpo. A Etapa 2 continua bloqueada até autorização explícita.
+Para concluir integralmente o aceite da Etapa 1, habilitar a aceleração de virtualização ou conectar um dispositivo Android físico, iniciar o app e registrar o resultado. A Etapa 2 continua bloqueada até autorização explícita.
