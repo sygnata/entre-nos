@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/config/app_config.dart';
 import '../domain/repositories/auth_repository.dart';
 
 class SupabaseAuthRepository implements AuthRepository {
@@ -17,6 +18,10 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signUp({required String email, required String password}) async {
-    await _client.auth.signUp(email: email, password: password);
+    await _client.auth.signUp(
+      email: email,
+      password: password,
+      emailRedirectTo: AppConfig.authRedirectUrl,
+    );
   }
 }

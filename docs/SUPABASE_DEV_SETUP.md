@@ -7,7 +7,8 @@ Crie um projeto **exclusivo de desenvolvimento** no painel do Supabase. Não use
 1. Acesse o painel do Supabase e crie uma organização/projeto de desenvolvimento.
 2. Escolha uma senha forte para o banco e guarde-a em gerenciador de senhas; não a envie pelo chat nem a versione.
 3. Em **Authentication > Providers**, mantenha e-mail habilitado e confirme que a verificação de e-mail está ativada antes de testes reais.
-4. Em **Authentication > URL Configuration**, adicione apenas URLs de desenvolvimento quando houver fluxo de deep link definido.
+4. Em **Authentication > URL Configuration > Additional Redirect URLs**, adicione exatamente `br.com.entrenos.entrenos://auth-callback/`. Esta é a URL de retorno do app Android de desenvolvimento; não use `localhost:3000`.
+5. Em **Authentication > Email Templates**, confirme que o link de confirmação usa `{{ .RedirectTo }}` (e não `{{ .SiteURL }}`), para que a URL solicitada pelo app seja respeitada.
 
 ## Configuração pública do app
 
@@ -25,6 +26,13 @@ Nunca forneça ou use no Flutter:
 - senha do banco
 - token pessoal de acesso
 - segredo de webhook
+
+## Testar confirmação de e-mail no Android
+
+1. Instale uma nova versão do app após compilar com a alteração de deep link.
+2. Cadastre um e-mail ainda não confirmado e abra **somente o link mais recente** recebido.
+3. O Android deve oferecer/abrir o EntreNós; o app deve retornar à sessão autenticada.
+4. Se surgir `otp_expired`, solicite um novo e-mail de confirmação e abra-o uma única vez. Links de confirmação são de uso único e expiram.
 
 ## Antes de aplicar migrations
 
