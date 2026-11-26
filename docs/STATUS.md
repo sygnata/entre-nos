@@ -32,6 +32,8 @@
 | Ambiente Flutter | Flutter 3.29.2, Dart 3.7.2 e Git 2.33.0 instalados. Flutter reportou falha de certificado ao buscar tags; nenhuma atualização foi executada. |
 | Android | SDK 36.0.0, NDK 27.0.12077973 e Command-line Tools instalados. `flutter doctor -v` confirma o toolchain Android e todas as licenças aceitas. |
 | Supabase dev | Projeto `EntreNos-dev` (`jilftgawlpavattmimqk`) vinculado e migration `202611260001_profiles_and_consents.sql` aplicada em 2026-11-26. E-mail com confirmação foi configurado pelo responsável. |
+| Autenticação e onboarding local | Implementados contrato, repositório Supabase, estado de sessão, cadastro/login por e-mail, bloqueio de e-mail não confirmado, confirmação 18+ e consentimento específico. O app verifica a persistência do consentimento antes de liberar a tela provisória de conta pronta. |
+| Validação da Etapa 2 (parcial) | Em 2026-11-26, `dart format lib test`, `flutter analyze` e `flutter test` foram executados com sucesso; análise sem problemas e 1 teste de widget aprovado. |
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |
@@ -42,4 +44,4 @@
 
 ## Próximo passo
 
-Implementar as telas e contratos locais de autenticação/onboarding. A integração e os testes SQL exigem um projeto Supabase de desenvolvimento isolado, ainda não configurado.
+Executar o fluxo em dispositivo Android físico com o projeto `EntreNos-dev`: cadastro, confirmação de e-mail, login, maioridade e consentimento. Antes de concluir a Etapa 2, executar e registrar testes SQL/RLS no ambiente de desenvolvimento isolado. Consulte `docs/TESTE_CELULAR_ANDROID.md` para a conexão e execução no celular.
