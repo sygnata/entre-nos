@@ -65,3 +65,6 @@ supabase/.branches/
 # Test and tooling output.
 coverage/
 .vscode/*.log
+
+# Node tooling installed for the Supabase CLI.
+node_modules/

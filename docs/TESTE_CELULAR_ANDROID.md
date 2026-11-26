@@ -34,16 +34,20 @@ Neste computador, configure temporariamente o Gradle para usar a cadeia de certi
 
 ```bat
 set GRADLE_OPTS=-Djavax.net.ssl.trustStoreType=Windows-ROOT
-flutter run
+flutter run --dart-define=SUPABASE_URL=SUA_PROJECT_URL --dart-define=SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLISHABLE
 ```
 
 Se houver mais de um dispositivo conectado, informe o identificador exibido por `flutter devices`:
 
 ```bat
-flutter run -d ID_DO_CELULAR
+flutter run -d ID_DO_CELULAR --dart-define=SUPABASE_URL=SUA_PROJECT_URL --dart-define=SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLISHABLE
 ```
 
 O comando compila, instala uma versão de depuração e abre o app no celular. Ele não publica o app na Play Store.
+
+## Confirmação de e-mail
+
+O teste de cadastro requer a configuração de deep link descrita em `docs/SUPABASE_DEV_SETUP.md`. Depois de instalar a versão atualizada, cadastre uma conta e abra apenas o link de confirmação mais recente. O retorno esperado é abrir o EntreNós, não `localhost`.
 
 ## Durante o desenvolvimento
 

@@ -1,0 +1,56 @@
+name: Feature Promotion
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  pull_request_target:
+    types: [closed]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  open-develop-pull-request:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository && (startsWith(github.event.workflow_run.head_branch, 'feature/') || startsWith(github.event.workflow_run.head_branch, 'fix/'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        env:
+          GOVERNANCE_PR_TOKEN: ${{ secrets.GOVERNANCE_PR_TOKEN }}
+        with:
+          github-token: ${{ secrets.GOVERNANCE_PR_TOKEN }}
+          script: |
+            if (!process.env.GOVERNANCE_PR_TOKEN) return core.setFailed('Configure GOVERNANCE_PR_TOKEN before using promotion automation.');
+            const { owner, repo } = context.repo;
+            const branch = context.payload.workflow_run.head_branch;
+            const existing = await github.paginate(github.rest.pulls.list, { owner, repo, state: 'open', head: `${owner}:${branch}`, base: 'develop', per_page: 100 });
+            if (existing.length) return core.info(`Feature PR already exists: ${existing[0].html_url}`);
+            const pr = await github.rest.pulls.create({ owner, repo, head: branch, base: 'develop', title: `${branch.split('/')[0]}: ${branch.slice(branch.indexOf('/') + 1)}`, body: 'Automated PR opened after successful CI.' });
+            core.notice(`Created feature PR: ${pr.data.html_url}`);
+
+  create-release-branch:
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop' && (startsWith(github.event.pull_request.head.ref, 'feature/') || startsWith(github.event.pull_request.head.ref, 'fix/'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        env:
+          GOVERNANCE_PR_TOKEN: ${{ secrets.GOVERNANCE_PR_TOKEN }}
+        with:
+          github-token: ${{ secrets.GOVERNANCE_PR_TOKEN }}
+          script: |
+            if (!process.env.GOVERNANCE_PR_TOKEN) return core.setFailed('Configure GOVERNANCE_PR_TOKEN before using promotion automation.');
+            const { owner, repo } = context.repo;
+            const kind = context.payload.pull_request.head.ref.split('/')[0];
+            const branches = await github.paginate(github.rest.repos.listBranches, { owner, repo, per_page: 100 });
+            const versions = branches.map(({ name }) => /^release\/v(\d+)\.(\d+)\.(\d+)$/.exec(name)).filter(Boolean).map((m) => m.slice(1).map(Number));
+            const latest = versions.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).at(-1) || [0, 0, 0];
+            const next = kind === 'feature' ? [latest[0], latest[1] + 1, 0] : [latest[0], latest[1], latest[2] + 1];
+            const release = `release/v${next.join('.')}`;
+            const production = 'master';
+            const productionRef = await github.rest.git.getRef({ owner, repo, ref: `heads/${production}` });
+            try {
+              await github.rest.git.createRef({ owner, repo, ref: `refs/heads/${release}`, sha: productionRef.data.object.sha });
+              core.notice(`Created ${release} from ${production}.`);
+            } catch (error) {
+              if (error.status === 422) return core.info(`${release} already exists; no new release branch created.`);
+              throw error;
+            }
