@@ -33,6 +33,7 @@ Nunca forneça ou use no Flutter:
 2. Cadastre um e-mail ainda não confirmado e abra **somente o link mais recente** recebido.
 3. O Android deve oferecer/abrir o EntreNós; o app deve retornar à sessão autenticada.
 4. Se surgir `otp_expired`, solicite um novo e-mail de confirmação e abra-o uma única vez. Links de confirmação são de uso único e expiram.
+5. O SMTP padrão do Supabase é apenas para desenvolvimento: ele pode enviar somente para endereços autorizados da organização e possui limite baixo de envios (atualmente, até 2 por hora). Para testes com outros e-mails ou maior volume, configurar SMTP próprio é necessário.
 
 ## Antes de aplicar migrations
 

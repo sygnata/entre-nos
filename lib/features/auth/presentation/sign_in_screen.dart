@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../application/auth_providers.dart';
 
@@ -53,6 +54,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           password: _password.text,
         );
       }
+    } on AuthException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(_authErrorMessage(error))));
+      }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +71,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         setState(() => _loading = false);
       }
     }
+  }
+
+  String _authErrorMessage(AuthException error) {
+    if (error.statusCode == '429' || error.message.contains('rate limit')) {
+      return 'Limite de tentativas atingido. Aguarde antes de tentar novamente.';
+    }
+    if (_register) {
+      return 'Não foi possível enviar a confirmação. Verifique o limite de e-mails e tente mais tarde.';
+    }
+    return 'Não foi possível entrar. Confira seu e-mail e senha.';
   }
 
   @override
