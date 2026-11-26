@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/config/app_config.dart';
 import '../../onboarding/application/onboarding_providers.dart';
@@ -15,12 +17,14 @@ class AuthGate extends ConsumerWidget {
     if (!AppConfig.hasSupabaseConfiguration) {
       return const _ConfigurationRequiredScreen();
     }
+
     final session = ref.watch(authSessionProvider);
     return session.when(
       loading: () => const _LoadingScreen(),
       error:
-          (_, __) => _RecoverableErrorScreen(
+          (error, _) => _RecoverableErrorScreen(
             message: 'Não foi possível carregar sua sessão.',
+            error: error,
             onRetry: () => ref.invalidate(authSessionProvider),
           ),
       data: (value) {
@@ -30,13 +34,16 @@ class AuthGate extends ConsumerWidget {
         if (value.user.emailConfirmedAt == null) {
           return const _EmailConfirmationRequired();
         }
+
         final onboarding = ref.watch(onboardingCompletedProvider);
         return onboarding.when(
           loading: () => const _LoadingScreen(),
           error:
-              (_, __) => _RecoverableErrorScreen(
+              (error, _) => _RecoverableErrorScreen(
                 message: 'Não foi possível carregar seu perfil de onboarding.',
+                error: error,
                 onRetry: () => ref.invalidate(onboardingCompletedProvider),
+                onSignOut: () => ref.read(authRepositoryProvider)?.signOut(),
               ),
           data:
               (completed) =>
@@ -72,10 +79,17 @@ class _LoadingScreen extends StatelessWidget {
 }
 
 class _RecoverableErrorScreen extends StatelessWidget {
-  const _RecoverableErrorScreen({required this.message, required this.onRetry});
+  const _RecoverableErrorScreen({
+    required this.message,
+    required this.error,
+    required this.onRetry,
+    this.onSignOut,
+  });
 
   final String message;
+  final Object error;
   final VoidCallback onRetry;
+  final VoidCallback? onSignOut;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -86,11 +100,23 @@ class _RecoverableErrorScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(message, textAlign: TextAlign.center),
+            if (kDebugMode && error is PostgrestException) ...[
+              const SizedBox(height: 8),
+              Text(
+                'Diagnóstico de desenvolvimento: banco ${(error as PostgrestException).code ?? 'sem código'}.',
+                textAlign: TextAlign.center,
+              ),
+            ],
             const SizedBox(height: 16),
             FilledButton(
               onPressed: onRetry,
               child: const Text('Tentar novamente'),
             ),
+            if (onSignOut != null)
+              TextButton(
+                onPressed: onSignOut,
+                child: const Text('Sair da conta'),
+              ),
           ],
         ),
       ),
