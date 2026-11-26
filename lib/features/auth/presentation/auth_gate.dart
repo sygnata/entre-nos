@@ -18,7 +18,11 @@ class AuthGate extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     return session.when(
       loading: () => const _LoadingScreen(),
-      error: (_, __) => const _RecoverableErrorScreen(),
+      error:
+          (_, __) => _RecoverableErrorScreen(
+            message: 'Não foi possível carregar sua sessão.',
+            onRetry: () => ref.invalidate(authSessionProvider),
+          ),
       data: (value) {
         if (value == null) {
           return const SignInScreen();
@@ -29,7 +33,11 @@ class AuthGate extends ConsumerWidget {
         final onboarding = ref.watch(onboardingCompletedProvider);
         return onboarding.when(
           loading: () => const _LoadingScreen(),
-          error: (_, __) => const _RecoverableErrorScreen(),
+          error:
+              (_, __) => _RecoverableErrorScreen(
+                message: 'Não foi possível carregar seu perfil de onboarding.',
+                onRetry: () => ref.invalidate(onboardingCompletedProvider),
+              ),
           data:
               (completed) =>
                   completed
@@ -64,14 +72,27 @@ class _LoadingScreen extends StatelessWidget {
 }
 
 class _RecoverableErrorScreen extends StatelessWidget {
-  const _RecoverableErrorScreen();
+  const _RecoverableErrorScreen({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) => const Scaffold(
+  Widget build(BuildContext context) => Scaffold(
     body: Center(
       child: Padding(
-        padding: EdgeInsets.all(24),
-        child: Text('Não foi possível carregar sua sessão. Tente novamente.'),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: onRetry,
+              child: const Text('Tentar novamente'),
+            ),
+          ],
+        ),
       ),
     ),
   );
