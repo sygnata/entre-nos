@@ -29,6 +29,7 @@ jobs:
             }
 
             const { owner, repo } = context.repo;
+            await github.rest.repos.getBranch({ owner, repo, branch: production });
             const existing = await github.paginate(github.rest.pulls.list, {
               owner,
               repo,
