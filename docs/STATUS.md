@@ -31,6 +31,7 @@
 | Estrutura do repositório | Projeto Flutter criado sem sobrescrever `ROADMAP_ENTRENOS.md` ou `docs/`. |
 | Ambiente Flutter | Flutter 3.29.2, Dart 3.7.2 e Git 2.33.0 instalados. Flutter reportou falha de certificado ao buscar tags; nenhuma atualização foi executada. |
 | Android | SDK 36.0.0, NDK 27.0.12077973 e Command-line Tools instalados. `flutter doctor -v` confirma o toolchain Android e todas as licenças aceitas. |
+| Supabase dev | Projeto `EntreNos-dev` (`jilftgawlpavattmimqk`) vinculado e migration `202611260001_profiles_and_consents.sql` aplicada em 2026-11-26. E-mail com confirmação foi configurado pelo responsável. |
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |

@@ -16,7 +16,7 @@ No painel, copie somente a **Project URL** e a chave **anon/publishable**. Elas 
 Execute localmente no CMD:
 
 ```bat
-flutter run --dart-define=SUPABASE_URL=SUA_PROJECT_URL --dart-define=SUPABASE_ANON_KEY=SUA_CHAVE_ANON
+flutter run --dart-define=SUPABASE_URL=SUA_PROJECT_URL --dart-define=SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLISHABLE
 ```
 
 Nunca forneça ou use no Flutter:

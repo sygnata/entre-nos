@@ -18,7 +18,7 @@ flutter pub get
 dart format .
 flutter analyze
 flutter test
-flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
+flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_PUBLISHABLE_KEY=...
 ```
 
 As definições do Supabase não são necessárias neste bootstrap e só devem ser fornecidas após a etapa de autenticação. Nunca use uma chave `service_role` no app.
