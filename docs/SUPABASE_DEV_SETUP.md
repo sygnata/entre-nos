@@ -8,7 +8,7 @@ Crie um projeto **exclusivo de desenvolvimento** no painel do Supabase. Não use
 2. Escolha uma senha forte para o banco e guarde-a em gerenciador de senhas; não a envie pelo chat nem a versione.
 3. Em **Authentication > Providers**, mantenha e-mail habilitado e confirme que a verificação de e-mail está ativada antes de testes reais.
 4. Em **Authentication > URL Configuration > Additional Redirect URLs**, adicione exatamente `br.com.entrenos.entrenos://auth-callback/`. Esta é a URL de retorno do app Android de desenvolvimento; não use `localhost:3000`.
-5. Em **Authentication > Email Templates**, confirme que o link de confirmação usa `{{ .RedirectTo }}` (e não `{{ .SiteURL }}`), para que a URL solicitada pelo app seja respeitada.
+5. Em projetos gratuitos novos que usam o SMTP padrão, os templates podem ficar somente em visualização. Não é necessário alterá-los para este teste: o template padrão usa a URL de confirmação e o app informa a URL de retorno permitida no cadastro. A edição do template exige SMTP próprio ou plano elegível.
 
 ## Configuração pública do app
 
