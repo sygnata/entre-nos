@@ -37,7 +37,7 @@
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |
-| Build Android | `flutter build apk --debug` executado com sucesso após ajustar `compileSdk` para 36, `minSdk` para 23 e NDK para 27.0.12077973. APK gerado em `build/app/outputs/flutter-apk/app-debug.apk`. Neste computador, o Gradle exigiu `GRADLE_OPTS=-Djavax.net.ssl.trustStoreType=Windows-ROOT` para usar a cadeia confiável do Windows sem desativar TLS. |
+| Build Android | `flutter build apk --debug` executado com sucesso na versão de autenticação/onboarding em 2026-11-26. APK gerado em `build/app/outputs/flutter-apk/app-debug.apk`. Neste computador, o Gradle exigiu `GRADLE_OPTS=-Djavax.net.ssl.trustStoreType=Windows-ROOT` para usar a cadeia confiável do Windows sem desativar TLS. |
 | Emulador Android | AVDs existentes foram encontrados (`Medium_Phone_API_36`, `Pixel_7`, `Pixel_8_Pro`), mas o `Pixel_7` não inicia: o Android Emulator Hypervisor Driver/virtualização necessária não está instalada. Não foi possível confirmar abertura do app em Android. |
 | Dispositivo Android físico | Teste executado pelo responsável em 2026-11-26: o APK foi compilado, instalado e aberto no dispositivo `2311DRK48I`; a tela esperada “Em preparação” foi exibida. |
 | Pesquisa externa | Consultadas fontes oficiais em 2026-11-25; links e conclusões em `STORE_CHECKLIST.md` e `PRIVACY.md`. |
