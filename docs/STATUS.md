@@ -2,9 +2,9 @@
 
 ## Etapa atual
 
-- Etapa: 1 — bootstrap do projeto.
-- Branch: `feature/project-bootstrap`.
-- Situação: concluída.
+- Etapa: 2 — autenticação e onboarding.
+- Branch: `feature/auth-onboarding`.
+- Situação: em andamento.
 - Última atualização: 2026-11-26.
 
 ## Concluído na Etapa 0
@@ -41,4 +41,4 @@
 
 ## Próximo passo
 
-A Etapa 1 atende aos critérios de aceite disponíveis: análise, teste, build e abertura em Android físico confirmados. A Etapa 2 continua bloqueada até autorização explícita.
+Implementar as telas e contratos locais de autenticação/onboarding. A integração e os testes SQL exigem um projeto Supabase de desenvolvimento isolado, ainda não configurado.
