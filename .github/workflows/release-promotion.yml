@@ -1,0 +1,52 @@
+name: Release Promotion
+on:
+  create:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  open-develop-pull-request:
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open promotion pull request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const release = context.payload.ref;
+            if (!/^release\/v[0-9]+\.[0-9]+\.[0-9]+$/.test(release)) {
+              core.setFailed(`Invalid release branch name: ${release}`);
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const existing = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:develop`,
+              base: release,
+              per_page: 100,
+            });
+            if (existing.length) {
+              core.info(`Promotion PR already exists: ${existing[0].html_url}`);
+              return;
+            }
+
+            try {
+              const pr = await github.rest.pulls.create({
+                owner,
+                repo,
+                head: 'develop',
+                base: release,
+                title: `release: ${release.slice('release/'.length)}`,
+                body: 'Automated promotion from `develop` to the new release branch.',
+              });
+              core.notice(`Created promotion PR: ${pr.data.html_url}`);
+            } catch (error) {
+              if (error.status === 422) {
+                core.warning('No promotion PR was created. There may be no commits to compare between develop and the release branch.');
+                return;
+              }
+              throw error;
+            }
