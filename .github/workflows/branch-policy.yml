@@ -1,0 +1,24 @@
+name: Branch Policy
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+permissions:
+  contents: read
+jobs:
+  validate-branch-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source and target
+        env:
+          SOURCE: ${{ github.head_ref }}
+          TARGET: ${{ github.base_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -eu
+          [[ "$HEAD_REPO" == "$BASE_REPO" ]] || { echo 'Fork PRs are not permitted'; exit 1; }
+          if [[ "$TARGET" == develop && "$SOURCE" =~ ^(feature|fix)/[a-z0-9]+(-[a-z0-9]+)*$ ]]; then exit 0; fi
+          if [[ "$SOURCE" == develop && "$TARGET" =~ ^release/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then exit 0; fi
+          if [[ "$TARGET" == master && "$SOURCE" =~ ^release/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then exit 0; fi
+          echo 'Invalid branch flow'; exit 1
