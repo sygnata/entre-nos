@@ -4,7 +4,7 @@ Aplicativo Flutter, Android primeiro, para casais adultos explorarem interesses 
 
 ## Estado atual
 
-O projeto está no bootstrap da Etapa 1. Não há autenticação, backend configurado, coleta de dados, catálogo ou compra implementados.
+A Etapa 2 está em andamento. O app possui a base de autenticação por e-mail, confirmação de conta, maioridade e consentimento específico, conectada a um projeto Supabase isolado de desenvolvimento. Vínculo de casal, catálogo e compras ainda não foram implementados.
 
 ## Pré-requisitos
 
@@ -18,7 +18,7 @@ flutter pub get
 dart format .
 flutter analyze
 flutter test
-flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
+flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_PUBLISHABLE_KEY=...
 ```
 
 As definições do Supabase não são necessárias neste bootstrap e só devem ser fornecidas após a etapa de autenticação. Nunca use uma chave `service_role` no app.

@@ -76,7 +76,7 @@ jobs:
               return;
             }
             const release = context.payload.pull_request.base.ref;
-            const production = '__PRODUCTION__';
+            const production = 'master';
             if (!/^release\/v[0-9]+\.[0-9]+\.[0-9]+$/.test(release)) {
               core.setFailed(`Invalid release branch name: ${release}`);
               return;
