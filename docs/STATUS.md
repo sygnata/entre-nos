@@ -18,7 +18,7 @@
 
 1. Aprovar ou reformular o posicionamento e o catálogo para compatibilidade com as lojas.
 2. Definir responsável jurídico/controlador, base legal, retenção, operadores e transferências internacionais.
-3. Aprovar orçamento mensal, preço final e modelo de acesso derivado após desvinculação.
+3. Aprovar orçamento mensal, preço final e modelo de acesso derivado após saída da dupla.
 4. Confirmar Flutter + Supabase + RevenueCat após avaliação de custos e políticas.
 5. Validar nome, marca, domínio e identificadores de pacote.
 6. Definir critérios e público do beta; revisar editorialmente qualquer conteúdo antes de publicação.
@@ -51,6 +51,12 @@
 - A área íntima permanece o único escopo do MVP. Perfil público da dupla, fotos, postagens, amizades e interação entre duplas ficam explicitamente fora do MVP.
 - A dupla terá área compartilhada, mas cada integrante continuará usando sua própria identidade autenticada. Uma senha única compartilhada foi rejeitada por não preservar votos individuais privados.
 - A decisão está detalhada no ADR `0004-dupla-privada-e-identidades-individuais.md`.
+
+## Etapa 2.1 — alinhamento ao modelo de dupla
+
+- Mensagem pós-onboarding, documentação de privacidade e validação de produto alinhadas ao conceito de dupla privada.
+- Não houve migration, alteração de RLS nem operação remota: `profiles`, `consents` e a autenticação individual já atendem ao novo modelo.
+- Em 2026-11-27, `dart format .`, `flutter analyze` e `flutter test` concluídos com sucesso nesta branch; análise sem problemas e 1 teste aprovado.
 
 ## Próximo passo
 

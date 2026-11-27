@@ -7,7 +7,7 @@ Validar se o EntreNós pode ser lançado como aplicativo móvel para adultos sem
 ## Escopo proposto para o MVP
 
 - Autenticação por e-mail verificado, confirmação de maioridade e consentimento específico.
-- Vínculo privado entre duas pessoas adultas, por convite de uso único e expiração.
+- Dupla privada entre duas pessoas adultas, por convite de uso único e expiração, sem pressupor casal, gênero, orientação ou vínculo romântico.
 - Perguntas individuais não gráficas, votos privados e matches autorizados.
 - Compra única não consumível, restauração e controles de privacidade/exclusão.
 
@@ -21,7 +21,7 @@ Fora do MVP: chat, fotos íntimas, perfis públicos, conteúdo gerado por usuár
 | Há demanda pagante para compra única | Entrevistas com adultos voluntários, teste de mensagem e beta sem dados íntimos. | Pendente |
 | R$ 9,90 sustenta a operação | Orçamento mensal, impostos, taxas, volume e cenários de reembolso. | Pendente |
 | Flutter + Supabase + RevenueCat atende ao MVP | Avaliação de custos, contratos, residência/transferência de dados, segurança e suporte. | Pendente |
-| O benefício ao parceiro vinculado é compreensível e permitido | Revisão de termos de loja, do provedor de compras e de redação pré-compra. | Pendente |
+| O benefício ao outro integrante ativo da dupla é compreensível e permitido | Revisão de termos de loja, do provedor de compras e de redação pré-compra. | Pendente |
 
 ## Go/no-go da Etapa 0
 
@@ -37,11 +37,11 @@ Fora do MVP: chat, fotos íntimas, perfis públicos, conteúdo gerado por usuár
 
 | Risco | Mitigação proposta |
 |---|---|
-| Reprovação ou remoção em loja | Posicionamento de comunicação entre casais; revisão humana; nenhuma descrição explícita, imagens sugestivas, chat ou UGC; submissão transparente. |
+| Reprovação ou remoção em loja | Posicionamento de comunicação entre duas pessoas adultas; revisão humana; nenhuma descrição explícita, imagens sugestivas, chat ou UGC; submissão transparente. |
 | Exposição de dados sensíveis | Mínima coleta, consentimento destacado, RLS/RPC, sem logs/analytics de votos e exclusão verificável. |
-| Inferência de voto do parceiro | Mostrar apenas matches elegíveis, nunca votos, motivos ou estados intermediários. |
+| Inferência de voto do outro integrante | Mostrar apenas matches elegíveis, nunca votos, motivos ou estados intermediários. |
 | Preço inviável para custo vitalício | Planilha de ponto de equilíbrio e alertas de custo antes da venda. |
-| Abuso por parceiro ou conta comprometida | Desvinculação unilateral, reautenticação em exclusão, ameaças modeladas e suporte restrito. |
+| Coerção entre integrantes ou conta comprometida | Saída unilateral da dupla, reautenticação em exclusão, ameaças modeladas e suporte restrito. |
 
 ## Evidências ainda necessárias
 
