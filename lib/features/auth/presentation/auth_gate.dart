@@ -157,7 +157,9 @@ class _OnboardingCompleteScreen extends StatelessWidget {
     appBar: AppBar(title: const Text('EntreNós')),
     body: const Padding(
       padding: EdgeInsets.all(24),
-      child: Text('Conta pronta. A vinculação de casal será a próxima etapa.'),
+      child: Text(
+        'Conta pronta. A formação da sua dupla privada será a próxima etapa.',
+      ),
     ),
   );
 }
