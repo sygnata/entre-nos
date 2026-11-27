@@ -45,16 +45,16 @@ begin
     raise exception 'authenticated_user_can_read_another_users_data';
   end if;
 
-  begin
-    update public.profiles
-    set adult_confirmed_at = adult_confirmed_at
-    where user_id = test_user_id;
-    raise exception 'authenticated_user_has_direct_update_privilege';
-  exception
-    when insufficient_privilege then null;
-  end;
-
   execute 'reset role';
+
+  if has_table_privilege('authenticated', 'public.profiles', 'insert')
+    or has_table_privilege('authenticated', 'public.profiles', 'update')
+    or has_table_privilege('authenticated', 'public.profiles', 'delete')
+    or has_table_privilege('authenticated', 'public.consents', 'insert')
+    or has_table_privilege('authenticated', 'public.consents', 'update')
+    or has_table_privilege('authenticated', 'public.consents', 'delete') then
+    raise exception 'authenticated_role_has_direct_write_privilege';
+  end if;
 
   if has_table_privilege('anon', 'public.profiles', 'select')
     or has_table_privilege('anon', 'public.consents', 'select') then

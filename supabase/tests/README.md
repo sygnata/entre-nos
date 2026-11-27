@@ -15,3 +15,5 @@ npx supabase db query --remote --read-only --file supabase/tests/20261127_profil
 ```
 
 O resultado esperado é `PASS: profiles/consents RLS and privileges verified`.
+O roteiro é somente leitura: privilégios de escrita direta são verificados pelo
+catálogo do PostgreSQL, sem executar `INSERT`, `UPDATE` ou `DELETE`.
