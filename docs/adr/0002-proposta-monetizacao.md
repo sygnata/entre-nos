@@ -5,7 +5,7 @@
 
 ## Proposta
 
-Produto base como compra única não consumível. A compra pertence à conta compradora; parceiro atualmente vinculado recebe acesso derivado enquanto o vínculo estiver ativo. Após desvinculação, o comprador mantém compra própria e o parceiro perde apenas o benefício derivado.
+Produto base como compra única não consumível. A compra pertence à identidade compradora; o outro integrante da dupla privada recebe acesso derivado enquanto a dupla estiver ativa. Após a saída da dupla, o comprador mantém compra própria e o outro integrante perde apenas o benefício derivado.
 
 ## Restrições
 
