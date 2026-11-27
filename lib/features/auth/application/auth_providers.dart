@@ -18,3 +18,17 @@ final authSessionProvider = StreamProvider<Session?>((ref) {
 
   return client.auth.onAuthStateChange.map((state) => state.session);
 });
+
+final validatedAuthSessionProvider = FutureProvider<Session?>((ref) async {
+  final session = await ref.watch(authSessionProvider.future);
+  if (session == null) {
+    return null;
+  }
+
+  final repository = ref.watch(authRepositoryProvider);
+  if (repository == null || !await repository.hasValidSession()) {
+    return null;
+  }
+
+  return session;
+});
