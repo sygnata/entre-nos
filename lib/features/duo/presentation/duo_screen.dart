@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../app/theme.dart';
+import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/app_section_card.dart';
 import '../../auth/application/auth_providers.dart';
 import '../application/duo_providers.dart';
 import '../domain/entities/duo_status.dart';
@@ -32,32 +35,25 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
     setState(() => _isSubmitting = true);
     try {
       await action();
-      if (!mounted) {
-        return;
-      }
-      ref.invalidate(duoStatusProvider);
+      if (mounted) ref.invalidate(duoStatusProvider);
     } on PostgrestException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_duoErrorMessage(error.message))));
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Não foi possível concluir esta ação. Tente novamente.',
-          ),
-        ),
-      );
-    } finally {
       if (mounted) {
-        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_duoErrorMessage(error.message))),
+        );
       }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Não foi possível concluir esta ação. Tente novamente.',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -82,18 +78,16 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
 
   Future<void> _acceptInvite() async {
     final token = _inviteController.text.trim();
-    if (token.isEmpty) {
-      return;
+    if (token.isNotEmpty) {
+      await _run(() => ref.read(duoActionsProvider).acceptInvite(token));
     }
-    await _run(() => ref.read(duoActionsProvider).acceptInvite(token));
   }
 
   Future<void> _cancelInvite() async {
     final inviteId = widget.status.pendingInviteId;
-    if (inviteId == null) {
-      return;
+    if (inviteId != null) {
+      await _run(() => ref.read(duoActionsProvider).cancelInvite(inviteId));
     }
-    await _run(() => ref.read(duoActionsProvider).cancelInvite(inviteId));
   }
 
   Future<void> _leaveDuo() async {
@@ -126,21 +120,19 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
     try {
       await ref.read(authRepositoryProvider)?.signOut();
     } catch (_) {
-      if (!mounted) {
-        return;
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Não foi possível sair da conta. Tente novamente.'),
+          ),
+        );
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Não foi possível sair da conta. Tente novamente.'),
-        ),
-      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final status = widget.status;
-    if (status.state == DuoState.active) {
+    if (widget.status.state == DuoState.active) {
       return _ActiveDuoScreen(
         isSubmitting: _isSubmitting,
         onLeave: _leaveDuo,
@@ -148,84 +140,120 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sua dupla privada'),
-        actions: [
-          IconButton(
-            onPressed: _isSubmitting ? null : _signOut,
-            tooltip: 'Sair da conta',
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          const Text(
-            'Convide uma pessoa adulta para formar uma dupla privada. O convite não revela seu e-mail.',
-          ),
-          const SizedBox(height: 24),
-          FilledButton(
-            onPressed: _isSubmitting ? null : _createInvite,
-            child: const Text('Gerar código de convite'),
-          ),
-          if (status.pendingInviteId != null) ...[
-            const SizedBox(height: 8),
-            OutlinedButton(
-              onPressed: _isSubmitting ? null : _cancelInvite,
-              child: const Text('Cancelar convite atual'),
-            ),
-          ],
-          if (_createdInviteToken != null) ...[
-            const SizedBox(height: 24),
-            const Text(
-              'Compartilhe este código somente com a pessoa convidada:',
-            ),
-            const SizedBox(height: 8),
-            SelectableText(_createdInviteToken!),
-            if (_createdInviteExpiresAt != null)
-              Text('Válido até ${_createdInviteExpiresAt!.toLocal()}.')
-            else
-              const SizedBox.shrink(),
-            TextButton(
-              onPressed: () async {
-                await Clipboard.setData(
-                  ClipboardData(text: _createdInviteToken!),
-                );
-                if (!context.mounted) {
-                  return;
-                }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Código copiado.')),
-                );
-              },
-              child: const Text('Copiar código'),
-            ),
-          ],
-          const SizedBox(height: 32),
-          const Divider(),
-          const SizedBox(height: 16),
-          const Text('Recebeu um código?'),
-          TextField(
-            controller: _inviteController,
-            autocorrect: false,
-            enableSuggestions: false,
-            textCapitalization: TextCapitalization.none,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-              LengthLimitingTextInputFormatter(64),
+    final tokens = context.entreNosTokens;
+    return AppPage(
+      title: 'Sua dupla privada',
+      actions: [
+        IconButton(
+          onPressed: _isSubmitting ? null : _signOut,
+          tooltip: 'Sair da conta',
+          icon: const Icon(Icons.logout),
+        ),
+      ],
+      children: [
+        Text(
+          'Construa este espaço a duas pessoas.',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: tokens.sectionGap),
+        AppSectionCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Convide uma pessoa adulta para formar uma dupla privada. O convite não revela seu e-mail.',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              SizedBox(height: tokens.sectionGap),
+              FilledButton(
+                onPressed: _isSubmitting ? null : _createInvite,
+                child: const Text('Gerar código de convite'),
+              ),
+              if (widget.status.pendingInviteId != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: _isSubmitting ? null : _cancelInvite,
+                  child: const Text('Cancelar convite atual'),
+                ),
+              ],
+              if (_createdInviteToken != null) ...[
+                SizedBox(height: tokens.sectionGap),
+                const Text(
+                  'Compartilhe este código somente com a pessoa convidada:',
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 18,
+                  ),
+                  decoration: BoxDecoration(
+                    color: tokens.subtleSurface,
+                    borderRadius: tokens.cardRadius,
+                  ),
+                  child: SelectableText(
+                    _createdInviteToken!,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                if (_createdInviteExpiresAt != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      'Válido até ${_formatInviteExpiration(_createdInviteExpiresAt!)}.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                TextButton.icon(
+                  onPressed: () async {
+                    await Clipboard.setData(
+                      ClipboardData(text: _createdInviteToken!),
+                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Código copiado.')),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.copy_outlined),
+                  label: const Text('Copiar código'),
+                ),
+              ],
             ],
-            decoration: const InputDecoration(labelText: 'Código de convite'),
           ),
-          const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: _isSubmitting ? null : _acceptInvite,
-            child: const Text('Aceitar convite'),
-          ),
-        ],
-      ),
+        ),
+        SizedBox(height: tokens.sectionGap),
+        Text(
+          'Recebeu um código?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _inviteController,
+          autocorrect: false,
+          enableSuggestions: false,
+          textCapitalization: TextCapitalization.none,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+            LengthLimitingTextInputFormatter(64),
+          ],
+          decoration: const InputDecoration(labelText: 'Código de convite'),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          onPressed: _isSubmitting ? null : _acceptInvite,
+          child: const Text('Aceitar convite'),
+        ),
+      ],
     );
+  }
+
+  String _formatInviteExpiration(DateTime value) {
+    final local = value.toLocal();
+    String twoDigits(int number) => number.toString().padLeft(2, '0');
+    return '${twoDigits(local.day)}/${twoDigits(local.month)}/${local.year} '
+        '${twoDigits(local.hour)}:${twoDigits(local.minute)}';
   }
 }
 
@@ -241,9 +269,10 @@ class _ActiveDuoScreen extends StatelessWidget {
   final VoidCallback onSignOut;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Sua dupla privada'),
+  Widget build(BuildContext context) {
+    final tokens = context.entreNosTokens;
+    return AppPage(
+      title: 'Sua dupla privada',
       actions: [
         IconButton(
           onPressed: isSubmitting ? null : onSignOut,
@@ -251,24 +280,39 @@ class _ActiveDuoScreen extends StatelessWidget {
           icon: const Icon(Icons.logout),
         ),
       ],
-    ),
-    body: Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Dupla formada com privacidade.'),
-          const SizedBox(height: 12),
-          const Text(
-            'As perguntas e os matches serão disponibilizados nas próximas etapas.',
+      children: [
+        Text(
+          'Dupla formada.',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: tokens.sectionGap),
+        AppSectionCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.verified_user_outlined,
+                color: tokens.success,
+                size: 32,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Dupla formada com privacidade.',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'As perguntas e os matches serão disponibilizados nas próximas etapas.',
+              ),
+            ],
           ),
-          const Spacer(),
-          OutlinedButton(
-            onPressed: isSubmitting ? null : onLeave,
-            child: const Text('Encerrar dupla'),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+        SizedBox(height: tokens.sectionGap * 2),
+        OutlinedButton(
+          onPressed: isSubmitting ? null : onLeave,
+          child: const Text('Encerrar dupla'),
+        ),
+      ],
+    );
+  }
 }

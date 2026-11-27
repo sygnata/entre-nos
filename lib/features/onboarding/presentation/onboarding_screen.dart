@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme.dart';
+import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/app_section_card.dart';
 import '../../auth/application/auth_providers.dart';
 import '../application/onboarding_providers.dart';
 
@@ -17,13 +20,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   bool _loading = false;
 
   Future<void> _continue() async {
-    if (!_adult || !_consent) {
-      return;
-    }
+    if (!_adult || !_consent) return;
     final repository = ref.read(onboardingRepositoryProvider);
-    if (repository == null) {
-      return;
-    }
+    if (repository == null) return;
 
     setState(() => _loading = true);
     try {
@@ -44,16 +43,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Antes de começar'),
+  Widget build(BuildContext context) {
+    final tokens = context.entreNosTokens;
+    return AppPage(
+      title: 'Antes de começar',
       actions: [
         IconButton(
           onPressed: () => ref.read(authRepositoryProvider)?.signOut(),
@@ -61,38 +59,44 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           icon: const Icon(Icons.logout),
         ),
       ],
-    ),
-    body: SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          Text(
-            'Privacidade e consentimento',
-            style: Theme.of(context).textTheme.headlineMedium,
+      children: [
+        Text(
+          'Privacidade e consentimento',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        SizedBox(height: tokens.sectionGap),
+        AppSectionCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Suas respostas podem revelar informações sensíveis. Elas são privadas e você poderá revogar o consentimento depois.',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              SizedBox(height: tokens.sectionGap),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: _adult,
+                onChanged: (value) => setState(() => _adult = value ?? false),
+                title: const Text('Confirmo que tenho 18 anos ou mais.'),
+              ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                value: _consent,
+                onChanged: (value) => setState(() => _consent = value ?? false),
+                title: const Text(
+                  'Concordo especificamente com o tratamento das minhas respostas para disponibilizar os matches.',
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          const Text(
-            'Suas respostas podem revelar informações sensíveis. Elas são privadas e você poderá revogar o consentimento depois.',
-          ),
-          CheckboxListTile(
-            value: _adult,
-            onChanged: (value) => setState(() => _adult = value ?? false),
-            title: const Text('Confirmo que tenho 18 anos ou mais.'),
-          ),
-          CheckboxListTile(
-            value: _consent,
-            onChanged: (value) => setState(() => _consent = value ?? false),
-            title: const Text(
-              'Concordo especificamente com o tratamento das minhas respostas para disponibilizar os matches.',
-            ),
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            onPressed: _loading || !_adult || !_consent ? null : _continue,
-            child: Text(_loading ? 'Salvando...' : 'Continuar'),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+        SizedBox(height: tokens.sectionGap),
+        FilledButton(
+          onPressed: _loading || !_adult || !_consent ? null : _continue,
+          child: Text(_loading ? 'Salvando...' : 'Continuar'),
+        ),
+      ],
+    );
+  }
 }

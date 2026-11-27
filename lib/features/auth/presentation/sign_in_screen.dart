@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../app/theme.dart';
+import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/app_section_card.dart';
 import '../application/auth_providers.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -26,13 +29,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _submit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
+    if (!(_formKey.currentState?.validate() ?? false)) return;
     final repository = ref.read(authRepositoryProvider);
-    if (repository == null) {
-      return;
-    }
+    if (repository == null) return;
 
     setState(() => _loading = true);
     try {
@@ -67,9 +66,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -84,62 +81,74 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('EntreNós')),
-    body: SafeArea(
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            Text(
-              _register ? 'Crie sua conta' : 'Entre na sua conta',
-              style: Theme.of(context).textTheme.headlineMedium,
+  Widget build(BuildContext context) {
+    final tokens = context.entreNosTokens;
+    return Form(
+      key: _formKey,
+      child: AppPage(
+        title: 'EntreNós',
+        children: [
+          Text(
+            _register ? 'Crie sua conta' : 'Entre na sua conta',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          SizedBox(height: tokens.sectionGap),
+          AppSectionCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  _register
+                      ? 'Use seu e-mail para criar uma identidade privada.'
+                      : 'Acesse sua identidade privada para continuar.',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                SizedBox(height: tokens.sectionGap),
+                TextFormField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  decoration: const InputDecoration(labelText: 'E-mail'),
+                  validator:
+                      (value) =>
+                          value != null && value.contains('@')
+                              ? null
+                              : 'Informe um e-mail válido.',
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _password,
+                  obscureText: true,
+                  autofillHints: const [AutofillHints.password],
+                  decoration: const InputDecoration(labelText: 'Senha'),
+                  validator:
+                      (value) =>
+                          value != null && value.length >= 8
+                              ? null
+                              : 'A senha deve ter pelo menos 8 caracteres.',
+                ),
+                SizedBox(height: tokens.sectionGap),
+                FilledButton(
+                  onPressed: _loading ? null : _submit,
+                  child: Text(
+                    _loading
+                        ? 'Aguarde...'
+                        : _register
+                        ? 'Cadastrar'
+                        : 'Entrar',
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _email,
-              keyboardType: TextInputType.emailAddress,
-              autofillHints: const [AutofillHints.email],
-              decoration: const InputDecoration(labelText: 'E-mail'),
-              validator:
-                  (value) =>
-                      value != null && value.contains('@')
-                          ? null
-                          : 'Informe um e-mail válido.',
-            ),
-            TextFormField(
-              controller: _password,
-              obscureText: true,
-              autofillHints: const [AutofillHints.password],
-              decoration: const InputDecoration(labelText: 'Senha'),
-              validator:
-                  (value) =>
-                      value != null && value.length >= 8
-                          ? null
-                          : 'A senha deve ter pelo menos 8 caracteres.',
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: _loading ? null : _submit,
-              child: Text(
-                _loading
-                    ? 'Aguarde...'
-                    : _register
-                    ? 'Cadastrar'
-                    : 'Entrar',
-              ),
-            ),
-            TextButton(
-              onPressed:
-                  _loading
-                      ? null
-                      : () => setState(() => _register = !_register),
-              child: Text(_register ? 'Já tenho uma conta' : 'Criar conta'),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed:
+                _loading ? null : () => setState(() => _register = !_register),
+            child: Text(_register ? 'Já tenho uma conta' : 'Criar conta'),
+          ),
+        ],
       ),
-    ),
-  );
+    );
+  }
 }
