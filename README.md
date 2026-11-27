@@ -4,7 +4,7 @@ Aplicativo Flutter, Android primeiro, para casais adultos explorarem interesses 
 
 ## Estado atual
 
-A Etapa 2 está em andamento. O app possui a base de autenticação por e-mail, confirmação de conta, maioridade e consentimento específico, conectada a um projeto Supabase isolado de desenvolvimento. Vínculo de casal, catálogo e compras ainda não foram implementados.
+A Etapa 2 foi concluída. O app possui autenticação por e-mail, confirmação de conta, maioridade e consentimento específico, conectados a um projeto Supabase isolado de desenvolvimento. Vínculo de casal, catálogo e compras ainda não foram implementados.
 
 ## Pré-requisitos
 
