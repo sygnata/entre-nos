@@ -2,9 +2,9 @@
 
 ## Etapa atual
 
-- Etapa: 3 — formação de dupla privada.
-- Branch: `feature/duo-link`.
-- Situação: concluída e validada no Supabase dev e em dispositivo Android físico.
+- Etapa: 3.1 — fundação visual e experiência.
+- Branch: `feature/design-foundation`.
+- Situação: implementada e validada localmente; aguardando validação visual em dispositivo.
 - Última atualização: 2026-11-27.
 
 ## Concluído na Etapa 0
@@ -71,6 +71,18 @@
 - Teste SQL/RLS da Etapa 3: `supabase/tests/20261127_duos_rls.sql` executado com sucesso no SQL Editor do EntreNos-dev em 2026-11-27, após usar duas contas de teste sem dupla ativa. O roteiro confirmou RPCs exclusivos, bloqueio anônimo, aceite, proibição de autoaceite/reuso e saída segura em transação revertida.
 - CI: pipeline aprovado, incluindo `dart format --output=none --set-exit-if-changed .` após o commit `4300a1a`.
 
+## Etapa 3.1 — fundação visual e experiência
+
+- Branch: `feature/design-foundation`.
+- A direção aprovada foi aplicada como tema minimalista: superfícies grafite/azul-marinho no modo escuro, texto claro e acento malva suave. Não foram adicionadas imagens nem assets decorativos.
+- `EntreNosTokens`, `ColorScheme`, tipografia e estilos de controles foram centralizados em `lib/app/theme.dart`. As telas não usam cores, raios ou sombras literais para definir a identidade.
+- Foram adicionados os componentes reutilizáveis `AppPage` e `AppSectionCard` em `lib/core/widgets/` e aplicados às telas de login/cadastro, consentimento e dupla privada, incluindo estados de convite e dupla formada.
+- O convite gerado passou a ter o código em um painel dedicado e a expiração é exibida no padrão brasileiro `DD/MM/AAAA HH:MM`. Títulos usam a família serifada genérica do sistema; textos de leitura permanecem na família padrão da plataforma.
+- A assinatura visual `EntreNós` foi centralizada em `AppBrand` e aparece no canto superior esquerdo das telas da etapa; “Nós” usa a cor de destaque do tema, sem cor literal nos widgets.
+- `AppPage` possui fallback de tokens para manter widgets testáveis isoladamente; isso evita acoplamento dos testes ao tema do app.
+- Validação em 2026-11-27: `dart format lib test`, `flutter analyze` e `flutter test` concluídos com sucesso. Análise sem problemas e 5 testes aprovados.
+- Pendente antes de marcar a etapa como concluída: validação visual em dispositivo Android físico, seguindo `docs/TESTE_CELULAR_ANDROID.md`.
+
 ## Próximo passo
 
-Solicitar autorização para iniciar a Etapa 4 (catálogo de perguntas) em uma nova branch.
+Validar visualmente a Etapa 3.1 em dispositivo Android físico e, após aceite, concluir a etapa antes de iniciar a Etapa 4 (catálogo de perguntas).
