@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/application/auth_providers.dart';
 import '../application/onboarding_providers.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -51,7 +52,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Antes de começar')),
+    appBar: AppBar(
+      title: const Text('Antes de começar'),
+      actions: [
+        IconButton(
+          onPressed: () => ref.read(authRepositoryProvider)?.signOut(),
+          tooltip: 'Sair da conta',
+          icon: const Icon(Icons.logout),
+        ),
+      ],
+    ),
     body: SafeArea(
       child: ListView(
         padding: const EdgeInsets.all(24),
