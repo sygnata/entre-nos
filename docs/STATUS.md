@@ -2,9 +2,9 @@
 
 ## Etapa atual
 
-- Etapa: 2 — autenticação e onboarding.
-- Branch: `feature/auth-onboarding`.
-- Situação: Etapa 3 em implementação local na branch `feature/duo-link`; migration ainda não aplicada ao Supabase dev.
+- Etapa: 3 — formação de dupla privada.
+- Branch: `feature/duo-link`.
+- Situação: concluída e validada no Supabase dev e em dispositivo Android físico.
 - Última atualização: 2026-11-27.
 
 ## Concluído na Etapa 0
@@ -58,7 +58,7 @@
 - Não houve migration, alteração de RLS nem operação remota: `profiles`, `consents` e a autenticação individual já atendem ao novo modelo.
 - Em 2026-11-27, `dart format .`, `flutter analyze` e `flutter test` concluídos com sucesso nesta branch; análise sem problemas e 1 teste aprovado.
 
-## Etapa 3 — formação de dupla privada (em andamento)
+## Etapa 3 — formação de dupla privada (concluída)
 
 - Branch: `feature/duo-link`.
 - Escopo: convite de uso único, dupla com duas identidades autenticadas, cancelamento e saída unilateral segura.
@@ -67,11 +67,10 @@
 - Correção local adicional: na abertura, o app valida a sessão persistida com o Supabase. Caso a conta tenha sido removida no servidor, a sessão local é encerrada e a tela de login é exibida; a tela de consentimento também oferece ação para sair.
 - Migration aplicada no Supabase dev em 2026-11-27: `202611270003_shorten_duo_invite_codes.sql` passa a gerar códigos alfanuméricos criptograficamente aleatórios de 16 caracteres. Convites pendentes emitidos no formato anterior de 64 caracteres foram cancelados e precisam ser gerados novamente.
 - Compatibilidade transitória: o campo de convite aceita até 64 caracteres para permitir o uso de códigos legados somente enquanto houver uma versão anterior do app instalada; o backend agora gera somente 16 caracteres.
-- Validação da correção: `dart format .` e `flutter analyze` concluídos sem problemas em 2026-11-27. O teste de widget novo (`flutter test test\\duo_screen_test.dart --reporter expanded`) excedeu 60 segundos sem saída por processos Dart antigos em execução; permanece pendente até que esses processos sejam liberados ou o responsável autorize encerrá-los.
-- A migration e o roteiro SQL serão revisados e testados localmente antes de qualquer solicitação de aplicação no projeto Supabase dev.
-- Em 2026-11-27, `dart --version`, `dart format`, `flutter analyze` e `flutter test` excederam o tempo limite neste computador antes de produzir saída. Há processos Dart iniciados em 2026-11-25; nenhum foi encerrado para não interromper trabalho do responsável. A validação Flutter permanece pendente.
-- O comando somente de leitura `npx supabase db push --dry-run --remote` foi tentado em 2026-11-27 e falhou ao inicializar a login role com `DbConfigLoginRoleNetworkError`/`TransportError`; nenhuma migration foi aplicada.
+- Validação manual em dispositivo Android: duas contas confirmadas concluíram onboarding individual, criaram e aceitaram convite, e a segunda conta exibiu “Dupla formada com privacidade”. A expiração e o cancelamento de convite também foram validados.
+- Teste SQL/RLS da Etapa 3: `supabase/tests/20261127_duos_rls.sql` executado com sucesso no SQL Editor do EntreNos-dev em 2026-11-27, após usar duas contas de teste sem dupla ativa. O roteiro confirmou RPCs exclusivos, bloqueio anônimo, aceite, proibição de autoaceite/reuso e saída segura em transação revertida.
+- CI: pipeline aprovado, incluindo `dart format --output=none --set-exit-if-changed .` após o commit `4300a1a`.
 
 ## Próximo passo
 
-Aguardar autorização para iniciar a Etapa 3 (formação de dupla privada) na branch `feature/duo-link`. A etapa incluirá migrations e RPCs de convites, membros e saída segura.
+Solicitar autorização para iniciar a Etapa 4 (catálogo de perguntas) em uma nova branch.
