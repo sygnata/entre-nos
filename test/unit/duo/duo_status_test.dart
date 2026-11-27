@@ -30,6 +30,9 @@ void main() {
 
     expect(status.state, DuoState.waitingForInvite);
     expect(status.pendingInviteId, 'invite-id');
-    expect(status.pendingInviteExpiresAt, DateTime.utc(2026, 11, 28, 12));
+    expect(
+      status.pendingInviteExpiresAt,
+      DateTime.utc(2026, 11, 28, 12),
+    );
   });
 }

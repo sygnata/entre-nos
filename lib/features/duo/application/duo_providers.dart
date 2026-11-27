@@ -30,6 +30,7 @@ class DuoActions {
 
   Future<DuoInvite> createInvite() => _repository.createInvite();
   Future<void> acceptInvite(String token) => _repository.acceptInvite(token);
-  Future<void> cancelInvite(String inviteId) => _repository.cancelInvite(inviteId);
+  Future<void> cancelInvite(String inviteId) =>
+      _repository.cancelInvite(inviteId);
   Future<void> leaveDuo() => _repository.leaveDuo();
 }

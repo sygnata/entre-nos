@@ -11,9 +11,8 @@ class DuoGate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final duoStatus = ref.watch(duoStatusProvider);
     return duoStatus.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (_, _) => Scaffold(
         body: Center(
           child: FilledButton(

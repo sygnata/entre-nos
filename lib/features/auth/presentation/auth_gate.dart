@@ -48,9 +48,7 @@ class AuthGate extends ConsumerWidget {
               ),
           data:
               (completed) =>
-                  completed
-                      ? const DuoGate()
-                      : const OnboardingScreen(),
+                  completed ? const DuoGate() : const OnboardingScreen(),
         );
       },
     );

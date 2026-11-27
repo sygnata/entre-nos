@@ -40,7 +40,9 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Não foi possível concluir esta ação. Tente novamente.'),
+          content: Text(
+            'Não foi possível concluir esta ação. Tente novamente.',
+          ),
         ),
       );
     } finally {
@@ -133,16 +135,22 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
           ],
           if (_createdInviteToken != null) ...[
             const SizedBox(height: 24),
-            const Text('Compartilhe este código somente com a pessoa convidada:'),
+            const Text(
+              'Compartilhe este código somente com a pessoa convidada:',
+            ),
             const SizedBox(height: 8),
             SelectableText(_createdInviteToken!),
             if (_createdInviteExpiresAt != null)
-              Text('Válido até ${_createdInviteExpiresAt!.toLocal()}.')
+              Text(
+                'Válido até ${_createdInviteExpiresAt!.toLocal()}.',
+              )
             else
               const SizedBox.shrink(),
             TextButton(
               onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: _createdInviteToken!));
+                await Clipboard.setData(
+                  ClipboardData(text: _createdInviteToken!),
+                );
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Código copiado.')),
@@ -161,7 +169,9 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
             autocorrect: false,
             enableSuggestions: false,
             textCapitalization: TextCapitalization.none,
-            decoration: const InputDecoration(labelText: 'Código de convite'),
+            decoration: const InputDecoration(
+              labelText: 'Código de convite',
+            ),
           ),
           const SizedBox(height: 8),
           OutlinedButton(
