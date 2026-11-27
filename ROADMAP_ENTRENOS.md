@@ -169,6 +169,7 @@ Não presumir que classificação 18+ garante aprovação. Se conteúdo ou mecâ
 | 1 feature/project-bootstrap | Flutter, app/router/theme, core, CI, README, AGENTS.md | analyze/test verdes; app abre Android |
 | 2 feature/auth-onboarding | auth, onboarding, profiles/consents migrations, guards | cadastro, verificação, sessão, maioridade, consentimento |
 | 3 feature/duo-link | duo, invites/members migrations e RPCs | convite expira, não reutiliza, dupla única, saída segura e votos individualmente privados |
+| 3.1 feature/design-foundation | theme, design tokens, componentes reutilizáveis e revisão das telas de autenticação/onboarding/dupla | identidade visual aprovada, contraste e alvos de toque validados, estados loading/empty/error consistentes e componentes reutilizáveis prontos para as etapas seguintes |
 | 4 feature/question-catalog | discovery, content schema/seed, categories/products/questions | catálogo 50/300, filtros, paginação, autorização servidor |
 | 5 feature/private-voting | votes/preferences migrations, casos de uso e telas | votos privados, edição, remoção, concorrência |
 | 6 feature/match-engine | matches migration, RPCs, tela matches | matriz completa, revogação e isolamento testados |
@@ -179,7 +180,17 @@ Não presumir que classificação 18+ garante aprovação. Se conteúdo ou mecâ
 | 11 feature/deck-store | v1.2 expansões e jornadas | compra avulsa independente e restauração |
 | 12 feature/personalization | v2 opcional | somente após validar demanda e privacidade |
 
-Dependências: 0→1→2→3→4→5→6→7→8→9; controles básicos de privacidade desde etapa 2, não postergar segurança até etapa 8. MVP estimado preliminarmente em 90–150 horas, não compromisso; reestimar após etapa 0 e bootstrap. Jogos e expansões fora dessa estimativa.
+Dependências: 0→1→2→3→3.1→4→5→6→7→8→9; controles básicos de privacidade desde etapa 2, não postergar segurança até etapa 8. MVP estimado preliminarmente em 90–150 horas, não compromisso; reestimar após etapa 0 e bootstrap. Jogos e expansões fora dessa estimativa.
+
+### Etapa 3.1 — fundação visual e experiência
+
+Antes de implementar o catálogo, consolidar a base visual do app sem antecipar telas ou recursos futuros. Definir tokens de cor, tipografia, espaçamento, elevação e raio; tema claro/escuro conforme viabilidade; componentes para botões, campos, feedbacks e estados de carregamento/erro/vazio. Revisar login, onboarding e dupla privada com identidade elegante e discreta, sem imagens ou linguagem explícitas. Validar contraste, leitores de tela, fontes escaláveis e alvos de toque. A direção visual deve ser aprovada por protótipos antes de alterar a interface implementada.
+
+Direção aprovada como referência: protótipo minimalista escuro em grafite/azul-marinho, superfícies discretas, texto em tom marfim e acento malva suave. A referência é visual, não um asset a incorporar no aplicativo. Evitar gradientes chamativos, ilustrações decorativas e excesso de cards; priorizar hierarquia tipográfica, espaço em branco e uma ação principal clara por tela.
+
+Para que a identidade possa mudar sem retrabalho amplo, concentrar as decisões visuais em `lib/app/theme.dart` (ou arquivos de tema sob `lib/app/`): `ColorScheme`, `ThemeData`, `TextTheme`, extensões de tema e tokens semânticos como `surface`, `onSurface`, `accent`, `success`, `danger`, espaçamentos e raios. Telas e componentes não devem usar cores, tamanhos, sombras ou bordas literais; devem consumir tema/tokens e componentes compartilhados em `core/widgets`. Manter os widgets de domínio neutros quanto à paleta, sem nomes ligados à cor (por exemplo, preferir `AppPrimaryButton` a `MauveButton`).
+
+Critérios adicionais de aceite: trocar a paleta base ou ajustar tipografia deve exigir alteração centralizada de tema/tokens, sem mudanças nas telas; componentes devem oferecer variantes semânticas e estados disabled/loading/error; a aparência deve respeitar tema do sistema quando houver modo claro e escuro; e os testes de widget devem verificar estados e semântica, não valores literais de cor.
 
 ## 12. Bootstrap (etapa 1, após aprovação)
 Verificar ambiente no CMD:
