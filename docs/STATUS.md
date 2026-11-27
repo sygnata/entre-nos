@@ -35,6 +35,7 @@
 | Autenticação e onboarding local | Implementados contrato, repositório Supabase, estado de sessão, cadastro/login por e-mail, bloqueio de e-mail não confirmado, confirmação 18+ e consentimento específico. O app verifica a persistência do consentimento antes de liberar a tela provisória de conta pronta. |
 | Validação da Etapa 2 (parcial) | Em 2026-11-26, `dart format lib test`, `flutter analyze` e `flutter test` foram executados com sucesso; análise sem problemas e 1 teste de widget aprovado. |
 | Deep link de confirmação | Implementado para Android com `br.com.entrenos.entrenos://auth-callback/`; análise, teste e build debug concluídos em 2026-11-26. Pendente adicionar a URL no painel do Supabase dev e testar um novo link de confirmação no dispositivo físico. Em projeto gratuito novo com SMTP padrão, o template pode ficar somente em visualização; ele não precisa ser alterado para este fluxo. |
+| Correção de leitura do onboarding | Diagnóstico no dispositivo retornou HTTP 403 após o login. Migration `202611270001_grant_onboarding_read_access.sql` criada para conceder somente `SELECT` a `authenticated`; a RLS continua restringindo o acesso ao próprio usuário. Pendente aplicação no projeto Supabase dev e reteste no dispositivo. |
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |
