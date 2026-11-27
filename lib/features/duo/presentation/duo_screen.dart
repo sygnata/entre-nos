@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../auth/application/auth_providers.dart';
 import '../application/duo_providers.dart';
 import '../domain/entities/duo_status.dart';
 
@@ -34,6 +36,13 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
         return;
       }
       ref.invalidate(duoStatusProvider);
+    } on PostgrestException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_duoErrorMessage(error.message))),
+      );
     } catch (_) {
       if (!mounted) {
         return;
@@ -51,6 +60,15 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
       }
     }
   }
+
+  String _duoErrorMessage(String message) => switch (message) {
+    'onboarding_incomplete' =>
+      'Conclua a confirmação de idade e o consentimento antes de vincular.',
+    'invalid_invite' || 'self_acceptance_not_allowed' =>
+      'Não foi possível usar este convite. Confira se o código está completo, válido e foi criado por outra conta.',
+    'already_in_active_duo' => 'Esta conta já participa de uma dupla.',
+    _ => 'Não foi possível concluir esta ação. Tente novamente.',
+  };
 
   Future<void> _createInvite() => _run(() async {
     final invite = await ref.read(duoActionsProvider).createInvite();
@@ -81,25 +99,41 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
   Future<void> _leaveDuo() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Encerrar dupla?'),
-        content: const Text(
-          'A saída encerra a dupla para as duas pessoas. Esta ação não pode ser desfeita.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Encerrar dupla?'),
+            content: const Text(
+              'A saída encerra a dupla para as duas pessoas. Esta ação não pode ser desfeita.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Encerrar dupla'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Encerrar dupla'),
-          ),
-        ],
-      ),
     );
     if (confirmed == true) {
       await _run(() => ref.read(duoActionsProvider).leaveDuo());
+    }
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await ref.read(authRepositoryProvider)?.signOut();
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível sair da conta. Tente novamente.'),
+        ),
+      );
     }
   }
 
@@ -110,11 +144,21 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
       return _ActiveDuoScreen(
         isSubmitting: _isSubmitting,
         onLeave: _leaveDuo,
+        onSignOut: _signOut,
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sua dupla privada')),
+      appBar: AppBar(
+        title: const Text('Sua dupla privada'),
+        actions: [
+          IconButton(
+            onPressed: _isSubmitting ? null : _signOut,
+            tooltip: 'Sair da conta',
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -141,9 +185,7 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
             const SizedBox(height: 8),
             SelectableText(_createdInviteToken!),
             if (_createdInviteExpiresAt != null)
-              Text(
-                'Válido até ${_createdInviteExpiresAt!.toLocal()}.',
-              )
+              Text('Válido até ${_createdInviteExpiresAt!.toLocal()}.')
             else
               const SizedBox.shrink(),
             TextButton(
@@ -151,11 +193,12 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
                 await Clipboard.setData(
                   ClipboardData(text: _createdInviteToken!),
                 );
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Código copiado.')),
-                  );
+                if (!context.mounted) {
+                  return;
                 }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Código copiado.')),
+                );
               },
               child: const Text('Copiar código'),
             ),
@@ -169,9 +212,11 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
             autocorrect: false,
             enableSuggestions: false,
             textCapitalization: TextCapitalization.none,
-            decoration: const InputDecoration(
-              labelText: 'Código de convite',
-            ),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+              LengthLimitingTextInputFormatter(64),
+            ],
+            decoration: const InputDecoration(labelText: 'Código de convite'),
           ),
           const SizedBox(height: 8),
           OutlinedButton(
@@ -185,14 +230,28 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
 }
 
 class _ActiveDuoScreen extends StatelessWidget {
-  const _ActiveDuoScreen({required this.isSubmitting, required this.onLeave});
+  const _ActiveDuoScreen({
+    required this.isSubmitting,
+    required this.onLeave,
+    required this.onSignOut,
+  });
 
   final bool isSubmitting;
   final VoidCallback onLeave;
+  final VoidCallback onSignOut;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Sua dupla privada')),
+    appBar: AppBar(
+      title: const Text('Sua dupla privada'),
+      actions: [
+        IconButton(
+          onPressed: isSubmitting ? null : onSignOut,
+          tooltip: 'Sair da conta',
+          icon: const Icon(Icons.logout),
+        ),
+      ],
+    ),
     body: Padding(
       padding: const EdgeInsets.all(24),
       child: Column(

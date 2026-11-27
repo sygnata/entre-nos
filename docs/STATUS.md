@@ -62,6 +62,12 @@
 
 - Branch: `feature/duo-link`.
 - Escopo: convite de uso único, dupla com duas identidades autenticadas, cancelamento e saída unilateral segura.
+- Correção local: a tela de dupla agora exibe a ação **Sair da conta**, para alternar entre as duas identidades durante os testes. A ação reutiliza o encerramento de sessão do repositório de autenticação e não altera dados da dupla.
+- Correção local adicional: o estado de onboarding agora depende da sessão autenticada. Assim, ao trocar de conta, a segunda identidade não herda em memória o consentimento da primeira e deve concluir a confirmação de idade e o consentimento específico.
+- Correção local adicional: na abertura, o app valida a sessão persistida com o Supabase. Caso a conta tenha sido removida no servidor, a sessão local é encerrada e a tela de login é exibida; a tela de consentimento também oferece ação para sair.
+- Migration aplicada no Supabase dev em 2026-11-27: `202611270003_shorten_duo_invite_codes.sql` passa a gerar códigos alfanuméricos criptograficamente aleatórios de 16 caracteres. Convites pendentes emitidos no formato anterior de 64 caracteres foram cancelados e precisam ser gerados novamente.
+- Compatibilidade transitória: o campo de convite aceita até 64 caracteres para permitir o uso de códigos legados somente enquanto houver uma versão anterior do app instalada; o backend agora gera somente 16 caracteres.
+- Validação da correção: `dart format .` e `flutter analyze` concluídos sem problemas em 2026-11-27. O teste de widget novo (`flutter test test\\duo_screen_test.dart --reporter expanded`) excedeu 60 segundos sem saída por processos Dart antigos em execução; permanece pendente até que esses processos sejam liberados ou o responsável autorize encerrá-los.
 - A migration e o roteiro SQL serão revisados e testados localmente antes de qualquer solicitação de aplicação no projeto Supabase dev.
 - Em 2026-11-27, `dart --version`, `dart format`, `flutter analyze` e `flutter test` excederam o tempo limite neste computador antes de produzir saída. Há processos Dart iniciados em 2026-11-25; nenhum foi encerrado para não interromper trabalho do responsável. A validação Flutter permanece pendente.
 - O comando somente de leitura `npx supabase db push --dry-run --remote` foi tentado em 2026-11-27 e falhou ao inicializar a login role com `DbConfigLoginRoleNetworkError`/`TransportError`; nenhuma migration foi aplicada.

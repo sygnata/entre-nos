@@ -19,14 +19,14 @@ class AuthGate extends ConsumerWidget {
       return const _ConfigurationRequiredScreen();
     }
 
-    final session = ref.watch(authSessionProvider);
+    final session = ref.watch(validatedAuthSessionProvider);
     return session.when(
       loading: () => const _LoadingScreen(),
       error:
           (error, _) => _RecoverableErrorScreen(
             message: 'Não foi possível carregar sua sessão.',
             error: error,
-            onRetry: () => ref.invalidate(authSessionProvider),
+            onRetry: () => ref.invalidate(validatedAuthSessionProvider),
           ),
       data: (value) {
         if (value == null) {

@@ -1,4 +1,4 @@
--- Run only after 202611270002_duos_and_invites.sql on the isolated development project.
+-- Run only after 202611270003_shorten_duo_invite_codes.sql on the isolated development project.
 -- Requires two confirmed, onboarded test accounts. All writes are rolled back.
 begin;
 
@@ -89,7 +89,9 @@ begin
 
   select public.create_duo_invite() into invitation;
   invite_token := invitation ->> 'invite_token';
-  if invite_token is null or length(invite_token) <> 64 then
+  if invite_token is null
+    or length(invite_token) <> 16
+    or invite_token !~ '^[A-Za-z0-9]{16}$' then
     raise exception 'invite_token_was_not_generated';
   end if;
 

@@ -4,10 +4,7 @@ import 'package:entrenos/features/duo/domain/entities/duo_status.dart';
 
 void main() {
   test('maps active duo status without member data', () {
-    final status = DuoStatus.fromRpc({
-      'state': 'active',
-      'duo_id': 'duo-id',
-    });
+    final status = DuoStatus.fromRpc({'state': 'active', 'duo_id': 'duo-id'});
 
     expect(status.state, DuoState.active);
     expect(status.duoId, 'duo-id');
@@ -30,9 +27,6 @@ void main() {
 
     expect(status.state, DuoState.waitingForInvite);
     expect(status.pendingInviteId, 'invite-id');
-    expect(
-      status.pendingInviteExpiresAt,
-      DateTime.utc(2026, 11, 28, 12),
-    );
+    expect(status.pendingInviteExpiresAt, DateTime.utc(2026, 11, 28, 12));
   });
 }
