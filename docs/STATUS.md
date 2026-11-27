@@ -2,9 +2,9 @@
 
 ## Etapa atual
 
-- Etapa: 3.1 — fundação visual e experiência.
+- Etapa: 3.1 — fundação visual e experiência (concluída).
 - Branch: `feature/design-foundation`.
-- Situação: implementada e validada localmente; aguardando validação visual em dispositivo.
+- Situação: concluída, com validação visual aceita pelo responsável.
 - Última atualização: 2026-11-27.
 
 ## Concluído na Etapa 0
@@ -81,8 +81,8 @@
 - A assinatura visual `EntreNós` foi centralizada em `AppBrand` e aparece no canto superior esquerdo das telas da etapa; “Nós” usa a cor de destaque do tema, sem cor literal nos widgets.
 - `AppPage` possui fallback de tokens para manter widgets testáveis isoladamente; isso evita acoplamento dos testes ao tema do app.
 - Validação em 2026-11-27: `dart format lib test`, `flutter analyze` e `flutter test` concluídos com sucesso. Análise sem problemas e 5 testes aprovados.
-- Pendente antes de marcar a etapa como concluída: validação visual em dispositivo Android físico, seguindo `docs/TESTE_CELULAR_ANDROID.md`.
+- Validação visual em dispositivo Android físico aceita pelo responsável em 2026-11-27; etapa concluída.
 
 ## Próximo passo
 
-Validar visualmente a Etapa 3.1 em dispositivo Android físico e, após aceite, concluir a etapa antes de iniciar a Etapa 4 (catálogo de perguntas).
+Solicitar autorização para iniciar a Etapa 4 (catálogo de perguntas) em uma nova branch.
