@@ -36,6 +36,7 @@
 | Validação da Etapa 2 (parcial) | Em 2026-11-26, `dart format lib test`, `flutter analyze` e `flutter test` foram executados com sucesso; análise sem problemas e 1 teste de widget aprovado. |
 | Deep link de confirmação | Implementado para Android com `br.com.entrenos.entrenos://auth-callback/`; análise, teste e build debug concluídos. Em 2026-11-27, o responsável confirmou o e-mail pelo link e retornou ao app com sucesso. Em projeto gratuito novo com SMTP padrão, o template pode ficar somente em visualização; ele não precisa ser alterado para este fluxo. |
 | Correção de leitura do onboarding | Diagnóstico no dispositivo retornou HTTP 403 após o login. Migration `202611270001_grant_onboarding_read_access.sql` concedeu somente `SELECT` a `authenticated`; a RLS continua restringindo o acesso ao próprio usuário. A migration foi aplicada no Supabase dev e o reteste em 2026-11-27 chegou à tela “Conta pronta”. |
+| Teste SQL/RLS da Etapa 2 | Roteiro transacional criado em `supabase/tests/20261127_profiles_consents_rls.sql`. Em 2026-11-27, `supabase db query --remote` falhou antes de chegar ao banco por erro de transporte no endpoint de gerenciamento `database/query`, inclusive para `SELECT 1`. Pendente executar o roteiro pelo SQL Editor do projeto EntreNos-dev e registrar o resultado. |
 | Formatação | `dart format .` executado com sucesso: 8 arquivos processados, 2 alterados. |
 | Análise | `flutter analyze` executado com sucesso: sem problemas. |
 | Testes | `flutter test` executado com sucesso: 1 teste de widget aprovado. |
@@ -46,4 +47,4 @@
 
 ## Próximo passo
 
-Executar e registrar testes SQL/RLS de `profiles` e `consents` no ambiente Supabase de desenvolvimento isolado. Depois de concluídos, encerrar formalmente a Etapa 2 e aguardar autorização antes de iniciar a Etapa 3 (vínculo de casal). Consulte `docs/TESTE_CELULAR_ANDROID.md` para a conexão e execução no celular.
+Executar e registrar o roteiro `supabase/tests/20261127_profiles_consents_rls.sql` pelo SQL Editor do ambiente Supabase de desenvolvimento isolado. Depois de concluídos, encerrar formalmente a Etapa 2 e aguardar autorização antes de iniciar a Etapa 3 (vínculo de casal). Consulte `docs/TESTE_CELULAR_ANDROID.md` para a conexão e execução no celular.

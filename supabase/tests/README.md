@@ -7,3 +7,11 @@ Cobrir: anônimo sem acesso; usuário A lê apenas seu perfil/consentimentos; us
 As tabelas `profiles` e `consents` concedem somente `SELECT` ao papel
 `authenticated`; a RLS ainda limita cada consulta ao `auth.uid()` do próprio
 usuário. Nenhum papel de cliente recebe `INSERT`, `UPDATE` ou `DELETE` direto.
+
+Execute o roteiro de validação no projeto de desenvolvimento vinculado:
+
+```bat
+npx supabase db query --remote --read-only --file supabase/tests/20261127_profiles_consents_rls.sql
+```
+
+O resultado esperado é `PASS: profiles/consents RLS and privileges verified`.
