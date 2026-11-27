@@ -40,9 +40,9 @@ class _DuoScreenState extends ConsumerState<DuoScreen> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_duoErrorMessage(error.message))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_duoErrorMessage(error.message))));
     } catch (_) {
       if (!mounted) {
         return;

@@ -11,11 +11,13 @@ final onboardingRepositoryProvider = Provider<OnboardingRepository?>((ref) {
 });
 
 final onboardingCompletedProvider = FutureProvider<bool>((ref) async {
-  final session = ref.watch(authSessionProvider).when(
-    data: (session) => session,
-    loading: () => null,
-    error: (_, _) => null,
-  );
+  final session = ref
+      .watch(authSessionProvider)
+      .when(
+        data: (session) => session,
+        loading: () => null,
+        error: (_, _) => null,
+      );
   if (session == null) {
     return false;
   }
