@@ -4,7 +4,7 @@
 
 - Etapa: 2 — autenticação e onboarding.
 - Branch: `feature/auth-onboarding`.
-- Situação: concluída; aguardando autorização para a Etapa 3.
+- Situação: concluída; roadmap revisado para a próxima etapa de dupla privada.
 - Última atualização: 2026-11-27.
 
 ## Concluído na Etapa 0
@@ -45,6 +45,13 @@
 | Dispositivo Android físico | Teste executado pelo responsável em 2026-11-26: o APK foi compilado, instalado e aberto no dispositivo `2311DRK48I`; a tela esperada “Em preparação” foi exibida. |
 | Pesquisa externa | Consultadas fontes oficiais em 2026-11-25; links e conclusões em `STORE_CHECKLIST.md` e `PRIVACY.md`. |
 
+## Decisão de escopo registrada em 2026-11-27
+
+- O produto passa a atender uma **dupla de duas pessoas adultas**, sem pressupor casal, gênero, orientação ou vínculo romântico.
+- A área íntima permanece o único escopo do MVP. Perfil público da dupla, fotos, postagens, amizades e interação entre duplas ficam explicitamente fora do MVP.
+- A dupla terá área compartilhada, mas cada integrante continuará usando sua própria identidade autenticada. Uma senha única compartilhada foi rejeitada por não preservar votos individuais privados.
+- A decisão está detalhada no ADR `0004-dupla-privada-e-identidades-individuais.md`.
+
 ## Próximo passo
 
-Aguardar autorização para iniciar a Etapa 3 (vínculo de casal) na branch `feature/couple-link`. A etapa incluirá migrations e RPCs de convites, membros e desvinculação segura.
+Aguardar autorização para iniciar a Etapa 3 (formação de dupla privada) na branch `feature/duo-link`. A etapa incluirá migrations e RPCs de convites, membros e saída segura.

@@ -1,15 +1,15 @@
 # EntreNós — Roadmap de produto e desenvolvimento
-> Nome provisório • Especificação para Codex • v1.0
+> Nome provisório • Especificação para Codex • v1.1
 
 ## 1. Missão e decisões
-Aplicativo para casais adultos descobrirem interesses mútuos, conversarem e se divertirem com privacidade. Inspiração funcional: LustDuo, sem copiar textos, identidade ou código.
+Aplicativo para duas pessoas adultas descobrirem interesses mútuos, conversarem e se divertirem com privacidade. Uma dupla pode ser um casal, duas pessoas solteiras, amigos ou outra relação escolhida por seus integrantes; o produto não presume gênero, orientação ou vínculo romântico. Inspiração funcional: LustDuo, sem copiar textos, identidade ou código.
 - Android primeiro; iOS posteriormente, mantendo Flutter multiplataforma.
 - Gratuito limitado; Premium vitalício por R$ 9,90 (preço inicial a validar), sem anúncios ou assinatura.
-- Compra única desbloqueia o catálogo principal para comprador e parceiro vinculado; expansões futuras vendidas separadamente.
+- Compra única desbloqueia o catálogo principal para comprador e outro integrante ativo da dupla; expansões futuras vendidas separadamente.
 - Prioridade absoluta: perguntas individuais e matches. Jogos, roleta e lista de desejos são complementares.
 - Nome EntreNós provisório; verificar marcas, domínio e lojas antes de publicar.
 - Stack proposta: Flutter, Dart, Riverpod, Supabase (PostgreSQL, Auth, Edge Functions), RevenueCat para compras. Decisão sujeita à validação de custos e políticas.
-- Não usar IA generativa, chat, fotos íntimas, perfis públicos ou microsserviços no MVP.
+- Não usar IA generativa, chat, fotos íntimas, perfis públicos, postagens sociais ou microsserviços no MVP. Uma camada social futura poderá ter perfil público da dupla e interações entre duplas, mas será opt-in, separada da área íntima e só será especificada após validar o MVP.
 
 ## 2. Instruções obrigatórias ao Codex
 Leia este documento antes de alterar código. Inspecione o repositório e versões instaladas; não sobrescreva trabalho existente. Implemente uma etapa por vez, com testes e documentação. Antes de cada etapa, apresente plano, arquivos afetados e branch. Não invente credenciais, resultados de testes ou APIs. Use versões estáveis compatíveis, lockfile e migrations versionadas. Não execute deploy, compras reais, exclusões remotas ou alterações de produção sem autorização. Registre decisões em docs/adr e progresso em docs/STATUS.md. Se uma regra estiver ambígua, pergunte antes de implementar. Use português brasileiro na interface e inglês no código. Evite dependências desnecessárias. Trabalhe em Windows/CMD quando fornecer comandos locais; não dependa de Docker sem aprovação.
@@ -26,19 +26,21 @@ Leia este documento antes de alterar código. Inspecione o repositório e versõ
 | Lista de desejos (v1.1) | Básica | Completa |
 | Expansões (v1.2) | Compra avulsa | Compra avulsa |
 
-MVP comercial: autenticação, vínculo, catálogo, votação, matches, compra/restauração, configurações e exclusão. Funcionalidades v1.1 não devem ser anunciadas como disponíveis antes de entregues. Sem bloquear segurança, exclusão ou revogação por pagamento. Premium é produto não consumível, sem expiração, sujeito a reembolso/revogação; não prometer serviço online perpétuo. Compras pertencem à conta compradora; parceiro atual recebe acesso derivado enquanto vinculado. Ao desvincular, comprador mantém aquisição e parceiro perde benefício derivado (mantém compras próprias). Informar isso antes da compra. Expansões futuras seguem a mesma regra, a validar. Não transferir compra entre contas. Preço exibido vem da loja, nunca hardcoded na tela de pagamento.
+MVP comercial: autenticação, criação ou entrada em dupla privada, catálogo, votação, matches, compra/restauração, configurações e exclusão. Funcionalidades v1.1 não devem ser anunciadas como disponíveis antes de entregues. Sem bloquear segurança, exclusão ou revogação por pagamento. Premium é produto não consumível, sem expiração, sujeito a reembolso/revogação; não prometer serviço online perpétuo. Compras pertencem à identidade compradora; o outro integrante ativo recebe acesso derivado enquanto a dupla estiver ativa. Ao sair da dupla, comprador mantém aquisição e o outro integrante perde benefício derivado (mantém compras próprias). Informar isso antes da compra. Expansões futuras seguem a mesma regra, a validar. Não transferir compra entre contas. Preço exibido vem da loja, nunca hardcoded na tela de pagamento.
 
 ## 4. Fluxos e regras de negócio
 ### Onboarding
-Boas-vindas → confirmação 18+ → termos/privacidade e consentimento específico para dados sensíveis → autenticação por e-mail verificado → criar ou aceitar convite → início.
-Permitir conhecer catálogo gratuito sem vínculo após onboarding; votação vinculada exige casal ativo. Recusa de consentimento impede coleta de respostas, sem impedir acesso às informações legais. Não coletar data de nascimento completa sem necessidade.
+Boas-vindas → confirmação 18+ → termos/privacidade e consentimento específico para dados sensíveis → autenticação por e-mail verificado → criar uma dupla privada ou aceitar convite → início.
+Permitir conhecer catálogo gratuito sem dupla após onboarding; votação compartilhada exige dupla ativa. Recusa de consentimento impede coleta de respostas, sem impedir acesso às informações legais. Não coletar data de nascimento completa sem necessidade.
 
-### Vínculo
-Cada usuário pode integrar no máximo um casal ativo. Convite aleatório de alta entropia, uso único, expiração proposta de 24h, armazenado como hash; não registrar token em logs. Criador pode cancelar. Destinatário autenticado visualiza confirmação e aceita explicitamente. Proibir autoaceite, reutilização, vínculo simultâneo; transação com locks/constraints. Não expor e-mail do parceiro. Sem vínculo automático por código. Desvinculação unilateral imediata, sem aprovação do outro; invalidar convites, acesso derivado e dados compartilhados. Novo vínculo nunca herda respostas ou matches anteriores.
+### Dupla privada
+Cada usuário pode integrar no máximo uma dupla ativa de dois integrantes. A dupla é uma entidade compartilhada e neutra; não pressupõe relação romântica nem gênero. Convite aleatório de alta entropia, uso único, expiração proposta de 24h, armazenado como hash; não registrar token em logs. Criador pode cancelar. Destinatário autenticado visualiza confirmação e aceita explicitamente. Proibir autoaceite, reutilização, vínculo simultâneo; transação com locks/constraints. Não expor e-mail do outro integrante. Sem vínculo automático por código. Saída unilateral imediata, sem aprovação da outra pessoa; invalidar convites, acesso derivado e dados compartilhados. Nova dupla nunca herda respostas ou matches anteriores.
+
+Cada integrante possui sua própria identidade autenticada. Não usar uma única senha compartilhada como mecanismo de identidade: quem controla a mesma sessão poderia acessar votos privados da outra pessoa. A experiência pode apresentar uma área comum da dupla, mas a autenticação individual é obrigatória para preservar privacidade, recuperação de acesso, revogação e auditoria.
 
 ### Perguntas
 Categorias propostas: conexão emocional 30; romance 30; intimidade 50; desejos e fantasias 70; novas experiências 50; preferências pessoais 40; fora da rotina 30. Total 300, sendo 50 gratuitas distribuídas entre categorias. Conteúdo original, não gráfico, revisado para consentimento, inclusão e políticas de lojas. Cada carta possui id estável, versão, categoria, texto, intensidade (leve/moderada/avançada), ordem, idioma, produto exigido e estado publicado. Não alterar significado de carta já respondida: criar nova versão e exigir nova resposta.
-Respostas: YES, MAYBE, NO; pular não grava voto. Usuário pode editar ou apagar voto. Progresso individual, nunca mostrar contagem de recusas ou progresso detalhado do parceiro. Não notificar respostas individuais. Filtros por categoria e intensidade; ocultar categorias indesejadas. Não inferir preferências por telemetria.
+Respostas: YES, MAYBE, NO; pular não grava voto. Usuário pode editar ou apagar voto. Progresso individual, nunca mostrar contagem de recusas ou progresso detalhado do outro integrante. Não notificar respostas individuais. Filtros por categoria e intensidade; ocultar categorias indesejadas. Não inferir preferências por telemetria.
 
 ### Match
 | A | B | Resultado |
@@ -58,7 +60,7 @@ Roleta usa somente matches confirmados e ativos, com opção de pular e repetir;
 | Splash | sessão, carregamento e erro recuperável |
 | Onboarding | maioridade, termos, consentimento |
 | Login/cadastro | e-mail, verificação, recuperação |
-| Vínculo | criar, compartilhar, aceitar, cancelar convite |
+| Dupla privada | criar, compartilhar, aceitar, cancelar convite |
 | Home | continuar perguntas, categorias, matches, premium |
 | Categorias | progresso próprio, filtro, bloqueio premium |
 | Carta | texto, sim/talvez/não, pular, voltar |
@@ -80,7 +82,7 @@ lib/
   features/
     auth/
     onboarding/
-    couple/
+    duo/
     discovery/
     matches/
     billing/
@@ -110,29 +112,29 @@ UUID, timestamptz UTC, FK e índices explícitos. Usar migrations SQL; não edit
 |---|---|
 | profiles | user_id PK/FK auth.users, created_at, adult_confirmed_at |
 | consents | id, user_id, policy_version, purpose, granted_at, revoked_at |
-| couples | id, created_at, ended_at |
-| couple_members | couple_id, user_id, joined_at, left_at, PK composta; índice único parcial user_id onde left_at IS NULL |
-| couple_invites | id, inviter_id, token_hash UNIQUE, expires_at, consumed_at, cancelled_at |
+| duos | id, created_at, ended_at |
+| duo_members | duo_id, user_id, joined_at, left_at, PK composta; índice único parcial user_id onde left_at IS NULL |
+| duo_invites | id, inviter_id, token_hash UNIQUE, expires_at, consumed_at, cancelled_at |
 | categories | id, slug UNIQUE, title, sort_order |
 | products | id, sku UNIQUE, type, active |
 | questions | id, category_id, version, locale, text, intensity, required_product_id nullable, published, sort_order |
-| votes | couple_id, user_id, question_id, answer, updated_at; UNIQUE(couple_id,user_id,question_id) |
-| discovery_preferences | couple_id,user_id,share_maybe; PK composta |
-| matches | couple_id,question_id,kind,created_at; PK composta |
+| votes | duo_id, user_id, question_id, answer, updated_at; UNIQUE(duo_id,user_id,question_id) |
+| discovery_preferences | duo_id,user_id,share_maybe; PK composta |
+| matches | duo_id,question_id,kind,created_at; PK composta |
 | entitlements | user_id,product_id,source,external_purchase_id,status,updated_at; unicidade de compra externa |
 | billing_events | provider_event_id PK, processed_at, status; sem payload sensível |
-| wishlist_items | couple_id,question_id,status; v1.1 |
+| wishlist_items | duo_id,question_id,status; v1.1 |
 
-FK de voto para membro e pergunta. Validar membro ativo, casal ativo, consentimento e acesso ao catálogo dentro da transação. Limitar casal a dois membros ativos por RPC/trigger com lock; índice sozinho não garante isso. Não expor convites por SELECT público. Índices para catálogo publicado, votos por casal/pergunta, matches por casal, compras por usuário/produto. Definir cascatas e rotinas de exclusão explicitamente. Encerrar casal e apagar votos, preferências, matches e lista compartilhada na mesma transação; retenção de compras/obrigações legais separada.
+FK de voto para membro e pergunta. Validar membro ativo, dupla ativa, consentimento e acesso ao catálogo dentro da transação. Limitar dupla a dois membros ativos por RPC/trigger com lock; índice sozinho não garante isso. Não expor convites por SELECT público. Índices para catálogo publicado, votos por dupla/pergunta, matches por dupla, compras por usuário/produto. Definir cascatas e rotinas de exclusão explicitamente. Encerrar dupla e apagar votos, preferências, matches e lista compartilhada na mesma transação; retenção de compras/obrigações legais separada. Não criar tabelas de perfil público, fotos, postagens, amizades ou interações sociais no MVP; se aprovadas no futuro, devem usar modelo e política de visibilidade próprios, sem reutilizar votos íntimos.
 
 ## 8. Contratos de backend e segurança
 Operações propostas (RPC ou Edge Function conforme responsabilidade):
 | Operação | Entrada | Saída |
 |---|---|---|
-| create_invite | nenhuma | token, expiração |
-| accept_invite | token | couple_id |
-| cancel_invite | invite_id | sucesso |
-| get_my_couple | nenhuma | estado e id, sem dados sensíveis do outro |
+| create_duo_invite | nenhuma | token, expiração |
+| accept_duo_invite | token | duo_id |
+| cancel_duo_invite | invite_id | sucesso |
+| get_my_duo | nenhuma | estado e id, sem dados sensíveis do outro integrante |
 | list_questions | categoria, cursor, intensidade | cartas autorizadas e paginação |
 | list_my_votes | cursor | votos próprios |
 | submit_vote | question_id, answer | confirmação própria |
@@ -140,18 +142,18 @@ Operações propostas (RPC ou Edge Function conforme responsabilidade):
 | set_share_maybe | boolean | sucesso |
 | list_matches | cursor | matches ativos autorizados |
 | get_my_access | nenhuma | produtos próprios e derivados |
-| leave_couple | confirmação | sucesso |
+| leave_duo | confirmação | sucesso |
 | revoke_consent | purpose | sucesso |
 | delete-account | autenticação recente | estado da exclusão |
 | billing-webhook | evento autenticado do provedor | status idempotente |
 
-RLS habilitada em todas as tabelas expostas. Default deny; acesso somente autenticado e autorizado. Votos: SELECT apenas próprios e do vínculo ativo; escrita via RPC. Matches: leitura apenas membros ativos com consentimento e acesso vigente; escrita somente servidor. Entitlements: leitura própria ou projeção mínima via RPC, escrita servidor. Catálogo: não enviar texto premium a usuário não autorizado. Preferir schema privado para tabelas internas. Funções SECURITY DEFINER com search_path fixo, nomes qualificados, privilégios mínimos e EXECUTE revogado de PUBLIC; validar auth.uid() e nunca aceitar user_id como autoridade. Serializar operações de voto/match por casal/pergunta e alterações de vínculo por locks consistentes; testar corrida. Erros genéricos sem revelar estado do parceiro. Rate limit para convites, login e operações abusivas. Nenhum voto em logs, crash reports ou ferramentas de terceiros.
+RLS habilitada em todas as tabelas expostas. Default deny; acesso somente autenticado e autorizado. Votos: SELECT apenas próprios e da dupla ativa; escrita via RPC. Matches: leitura apenas membros ativos com consentimento e acesso vigente; escrita somente servidor. Entitlements: leitura própria ou projeção mínima via RPC, escrita servidor. Catálogo: não enviar texto premium a usuário não autorizado. Preferir schema privado para tabelas internas. Funções SECURITY DEFINER com search_path fixo, nomes qualificados, privilégios mínimos e EXECUTE revogado de PUBLIC; validar auth.uid() e nunca aceitar user_id como autoridade. Serializar operações de voto/match por dupla/pergunta e alterações de vínculo por locks consistentes; testar corrida. Erros genéricos sem revelar estado do outro integrante. Rate limit para convites, login e operações abusivas. Nenhum voto em logs, crash reports ou ferramentas de terceiros.
 
 ## 9. Compras
 Configurar produtos não consumíveis nas lojas e entitlement base no RevenueCat. Identidade do provedor vinculada ao UUID autenticado, não e-mail. Fluxo: obter offerings → compra nativa → confirmação do servidor → atualizar acesso. Restaurar compras, tratar cancelamento, pending, offline, reembolso, duplicidade e troca de conta. Webhook autenticado com segredo, idempotência por event id, reconciliar estado autoritativo do provedor e eventos fora de ordem. Não confiar em preço, receipt ou entitlement enviado pelo cliente. Validar política de transferência/restauração de compras antes do lançamento. Não conceder acesso indefinidamente enquanto confirmação pendente. Testar sandbox e reembolso. Expansões: SKUs independentes, sem alterar entitlement base.
 
 ## 10. LGPD, segurança e publicação — gate obrigatório
-Dados sobre vida sexual podem ser sensíveis sob LGPD. Antes de coletar dados reais, validar base legal aplicável, consentimento específico e destacado quando adotado, transparência, minimização, direitos do titular, operadores, transferências internacionais, retenção e incidentes. Elaborar política de privacidade, termos, canal de contato e procedimento de acesso/correção/exclusão. Exportação de dados somente próprios e resultados legitimamente compartilhados, sem votos do parceiro. Revogação deve interromper tratamento correspondente e remover dados derivados; validar exceções legais. Definir prazo de backups e expurgo, retenção fiscal de compras e processo de exclusão Auth + banco com retries; não prometer exclusão instantânea de backups. Exigir reautenticação para excluir conta. Restringir acesso de suporte, MFA administrativo, segredos rotacionáveis, auditoria sem conteúdo íntimo. Elaborar avaliação de impacto e threat model (parceiro abusivo, conta comprometida, IDOR, convite vazado, logs, administrador, reembolso).
+Dados sobre vida sexual podem ser sensíveis sob LGPD. Antes de coletar dados reais, validar base legal aplicável, consentimento específico e destacado quando adotado, transparência, minimização, direitos do titular, operadores, transferências internacionais, retenção e incidentes. Elaborar política de privacidade, termos, canal de contato e procedimento de acesso/correção/exclusão. Exportação de dados somente próprios e resultados legitimamente compartilhados, sem votos do outro integrante. Revogação deve interromper tratamento correspondente e remover dados derivados; validar exceções legais. Definir prazo de backups e expurgo, retenção fiscal de compras e processo de exclusão Auth + banco com retries; não prometer exclusão instantânea de backups. Exigir reautenticação para excluir conta. Restringir acesso de suporte, MFA administrativo, segredos rotacionáveis, auditoria sem conteúdo íntimo. Elaborar avaliação de impacto e threat model (coerção entre integrantes, conta comprometida, IDOR, convite vazado, logs, administrador, reembolso).
 Validar regras atuais de conteúdo sexual, classificação etária, compras digitais, exclusão de conta, Data Safety e App Privacy antes de implementar conteúdo comercial. Referências oficiais para consulta:
 - https://support.google.com/googleplay/android-developer/
 - https://developer.apple.com/app-store/review/guidelines/
@@ -166,14 +168,14 @@ Não presumir que classificação 18+ garante aprovação. Se conteúdo ou mecâ
 | 0 feature/product-validation | docs/STORE_CHECKLIST.md, PRIVACY.md, ADRs, pesquisa de concorrentes e custos | escopo, políticas, conteúdo, orçamento e stack aprovados |
 | 1 feature/project-bootstrap | Flutter, app/router/theme, core, CI, README, AGENTS.md | analyze/test verdes; app abre Android |
 | 2 feature/auth-onboarding | auth, onboarding, profiles/consents migrations, guards | cadastro, verificação, sessão, maioridade, consentimento |
-| 3 feature/couple-link | couple, invites/members migrations e RPCs | convite expira, não reutiliza, vínculo único, saída segura |
+| 3 feature/duo-link | duo, invites/members migrations e RPCs | convite expira, não reutiliza, dupla única, saída segura e votos individualmente privados |
 | 4 feature/question-catalog | discovery, content schema/seed, categories/products/questions | catálogo 50/300, filtros, paginação, autorização servidor |
 | 5 feature/private-voting | votes/preferences migrations, casos de uso e telas | votos privados, edição, remoção, concorrência |
 | 6 feature/match-engine | matches migration, RPCs, tela matches | matriz completa, revogação e isolamento testados |
 | 7 feature/lifetime-billing | billing, entitlements/events, webhook | compra/restauração sandbox, acesso derivado, reembolso |
 | 8 feature/privacy-controls | settings, delete-account, exportação, revogação | exclusão, desvinculação, retenção e segurança verificadas |
 | 9 feature/release-hardening | testes E2E, acessibilidade, CI, documentação, assets de loja | beta fechado e checklist de publicação aprovado |
-| 10 feature/couple-games | v1.1 jogos, roleta, lista | jogos locais, roleta só matches ativos |
+| 10 feature/duo-games | v1.1 jogos, roleta, lista | jogos locais, roleta só matches ativos |
 | 11 feature/deck-store | v1.2 expansões e jornadas | compra avulsa independente e restauração |
 | 12 feature/personalization | v2 opcional | somente após validar demanda e privacidade |
 
@@ -201,11 +203,11 @@ flutter test
 Não recriar projeto existente. Validar compatibilidade de armazenamento seguro com Supabase SDK. RevenueCat (`purchases_flutter`) somente na etapa 7. Supabase CLI: consultar instalação oficial compatível com Windows; ambiente remoto de desenvolvimento isolado se não usar Docker. Testes SQL em ambiente isolado, nunca produção. Criar projetos dev/staging/prod antes de deploy; migrations revisadas e aplicadas via CI autorizado. iOS build e assinatura exigem macOS/Xcode ou CI macOS. Não inventar package ID definitivo.
 
 ## 13. Estratégia de testes
-Unitários: matriz YES/MAYBE/NO/ausente (16 combinações × opt-ins), transições, filtros, entitlement próprio/derivado, expiração, erros. Widget: onboarding, cartas, loading/error, acessibilidade, paywall, confirmação de saída. SQL/RLS: anônimo, A/B casal 1, C/D casal 2, ex-parceiro, usuário sem consentimento, Free/Premium; tentar SELECT/INSERT/UPDATE/DELETE direto e RPC maliciosa. B nunca lê voto de A; C não lê casal 1; Free não obtém texto premium; service_role ausente do bundle. Concorrência: dois aceites, votos simultâneos, revogação durante voto, saída durante compra. E2E: duas contas, convite, match, edição, compra sandbox, restauração, desvinculação, novo vínculo, exclusão. Webhook: assinatura inválida, replay, eventos fora de ordem, refund, timeout. Verificar logs sem dados sensíveis. CI: format, analyze, unit/widget, testes SQL em ambiente isolado, build debug. Não usar dados íntimos reais em fixtures.
+Unitários: matriz YES/MAYBE/NO/ausente (16 combinações × opt-ins), transições, filtros, entitlement próprio/derivado, expiração, erros. Widget: onboarding, cartas, loading/error, acessibilidade, paywall, confirmação de saída. SQL/RLS: anônimo, A/B dupla 1, C/D dupla 2, ex-integrante, usuário sem consentimento, Free/Premium; tentar SELECT/INSERT/UPDATE/DELETE direto e RPC maliciosa. B nunca lê voto de A; C não lê dupla 1; Free não obtém texto premium; service_role ausente do bundle. Concorrência: dois aceites, votos simultâneos, revogação durante voto, saída durante compra. E2E: duas contas, convite, match, edição, compra sandbox, restauração, saída da dupla, nova dupla, exclusão. Webhook: assinatura inválida, replay, eventos fora de ordem, refund, timeout. Verificar logs sem dados sensíveis. CI: format, analyze, unit/widget, testes SQL em ambiente isolado, build debug. Não usar dados íntimos reais em fixtures.
 
 ## 14. Conteúdo e operação
 JSON versionado com id estável, categoria, locale, intensidade, texto, versão e requiredProduct. Validar schema, unicidade, contagem, duplicatas, linguagem e revisão humana antes de publicar. Exemplos originais: “Gostaria de planejar um encontro surpresa?”, “Gostaria de reservar uma noite sem celulares?”, “Gostaria de conversar sobre nossos limites e preferências?”. Não gerar 300 cartas sem revisão editorial. Conteúdo novo pode ser adicionado por migration/importador administrativo; painel CMS fora do MVP.
-Métricas agregadas e opcionais: instalações, onboarding concluído, vínculos concluídos, sessões de descoberta, conversão Premium, reembolsos, erros. Nunca registrar pergunta respondida, voto, match específico, categoria íntima ou identificadores em analytics. Sem SDK de anúncios. Aquisição: página de apresentação discreta, ASO, conteúdo sobre comunicação de casais, beta com adultos voluntários; não coletar depoimentos íntimos sem autorização.
+Métricas agregadas e opcionais: instalações, onboarding concluído, duplas criadas, sessões de descoberta, conversão Premium, reembolsos, erros. Nunca registrar pergunta respondida, voto, match específico, categoria íntima ou identificadores em analytics. Sem SDK de anúncios. Aquisição: página de apresentação discreta, ASO, conteúdo sobre comunicação entre duas pessoas adultas, beta com adultos voluntários; não coletar depoimentos íntimos sem autorização.
 
 ## 15. Economia e custos
 R$ 9,90 × 85% = R$ 8,415 por venda em cenário hipotético de taxa de 15%, antes de impostos e infraestrutura. Para R$ 100–300 antes dos demais custos: cerca de 12–36 vendas/mês. Receita vitalícia depende de novas vendas e expansões; não é MRR. Calcular ponto de equilíbrio = teto(custos fixos mensais / contribuição líquida por venda). Verificar preços atuais de Supabase, RevenueCat, e-mail, lojas e backups; estabelecer orçamento e alertas. Limitar polling, paginação e consultas; não assumir free tier permanente. Se custo por usuário vitalício inviabilizar preço, revisar preço antes de vender, preservando direitos adquiridos.
@@ -217,4 +219,4 @@ Cada etapa: critérios de aceite cumpridos, testes executados com resultado real
 > Leia ROADMAP_ENTRENOS.md integralmente. Inspecione o repositório e ambiente. Comece exclusivamente pela etapa 0: crie a documentação de validação, liste evidências necessárias e decisões pendentes; não invente pesquisa nem implemente funcionalidades. Se não tiver acesso à web, marque a verificação como pendente. Apresente plano, branch, arquivos e critérios de aceite. Após minha aprovação, execute a etapa 1 seguindo a arquitetura e os comandos compatíveis com Windows CMD. Ao terminar cada etapa, execute testes disponíveis, reporte resultados reais, atualize docs/STATUS.md e aguarde autorização para avançar.
 
 ## 18. Decisões pendentes
-Nome definitivo e marca; aprovação das lojas e conteúdo; orçamento mensal; confirmação Flutter/Supabase/RevenueCat; política de retenção e base legal; preço final e regra de compartilhamento após desvinculação; revisão editorial das 300 cartas; critérios de beta. As quantidades, arquitetura, prazos e regras detalhadas são propostas de planejamento, não decisões explicitamente aprovadas pelo usuário.
+Nome definitivo e marca; aprovação das lojas e conteúdo; orçamento mensal; confirmação Flutter/Supabase/RevenueCat; política de retenção e base legal; preço final e regra de compartilhamento após saída da dupla; revisão editorial das 300 cartas; critérios de beta; eventual escopo, governança e política de privacidade da camada social futura. As quantidades, arquitetura, prazos e regras detalhadas são propostas de planejamento, exceto as decisões explicitamente registradas em ADRs aprovados.
