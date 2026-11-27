@@ -4,7 +4,7 @@
 
 - Etapa: 2 — autenticação e onboarding.
 - Branch: `feature/auth-onboarding`.
-- Situação: concluída; roadmap revisado para a próxima etapa de dupla privada.
+- Situação: Etapa 3 em implementação local na branch `feature/duo-link`; migration ainda não aplicada ao Supabase dev.
 - Última atualização: 2026-11-27.
 
 ## Concluído na Etapa 0
@@ -57,6 +57,14 @@
 - Mensagem pós-onboarding, documentação de privacidade e validação de produto alinhadas ao conceito de dupla privada.
 - Não houve migration, alteração de RLS nem operação remota: `profiles`, `consents` e a autenticação individual já atendem ao novo modelo.
 - Em 2026-11-27, `dart format .`, `flutter analyze` e `flutter test` concluídos com sucesso nesta branch; análise sem problemas e 1 teste aprovado.
+
+## Etapa 3 — formação de dupla privada (em andamento)
+
+- Branch: `feature/duo-link`.
+- Escopo: convite de uso único, dupla com duas identidades autenticadas, cancelamento e saída unilateral segura.
+- A migration e o roteiro SQL serão revisados e testados localmente antes de qualquer solicitação de aplicação no projeto Supabase dev.
+- Em 2026-11-27, `dart --version`, `dart format`, `flutter analyze` e `flutter test` excederam o tempo limite neste computador antes de produzir saída. Há processos Dart iniciados em 2026-11-25; nenhum foi encerrado para não interromper trabalho do responsável. A validação Flutter permanece pendente.
+- O comando somente de leitura `npx supabase db push --dry-run --remote` foi tentado em 2026-11-27 e falhou ao inicializar a login role com `DbConfigLoginRoleNetworkError`/`TransportError`; nenhuma migration foi aplicada.
 
 ## Próximo passo
 

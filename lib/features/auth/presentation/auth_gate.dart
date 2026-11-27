@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/config/app_config.dart';
+import '../../duo/presentation/duo_gate.dart';
 import '../../onboarding/application/onboarding_providers.dart';
 import '../../onboarding/presentation/onboarding_screen.dart';
 import '../application/auth_providers.dart';
@@ -48,7 +49,7 @@ class AuthGate extends ConsumerWidget {
           data:
               (completed) =>
                   completed
-                      ? const _OnboardingCompleteScreen()
+                      ? const DuoGate()
                       : const OnboardingScreen(),
         );
       },
@@ -144,21 +145,6 @@ class _EmailConfirmationRequired extends ConsumerWidget {
             child: const Text('Sair'),
           ),
         ],
-      ),
-    ),
-  );
-}
-
-class _OnboardingCompleteScreen extends StatelessWidget {
-  const _OnboardingCompleteScreen();
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('EntreNós')),
-    body: const Padding(
-      padding: EdgeInsets.all(24),
-      child: Text(
-        'Conta pronta. A formação da sua dupla privada será a próxima etapa.',
       ),
     ),
   );
